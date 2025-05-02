@@ -13,7 +13,7 @@ const useGetUserProfile = (userId) => {
     const fetchUserProfile = async () => {
       try {
         setLoading(true);  // Start loading
-        const res = await axios.get(`http://localhost:5000/api/v1/user/${userId}/profile`, { withCredentials: true });
+        const res = await axios.get(`https://the-cmdian-memories.onrender.com/api/v1/user/${userId}/profile`, { withCredentials: true });
         if (res.data.success) {
           dispatch(setUserProfile(res.data.user));
         }

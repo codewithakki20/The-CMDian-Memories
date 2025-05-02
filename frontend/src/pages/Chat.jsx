@@ -16,7 +16,7 @@ const ChatPage = () => {
   const sendMessageHandler = async (receiverId) => {
     try {
       const res = await axios.post(
-        `http://localhost:5000/api/v1/message/send/${receiverId}`,
+        `https://the-cmdian-memories.onrender.com/api/v1/message/send/${receiverId}`,
         { textMessage },
         {
           headers: { 'Content-Type': 'application/json' },
