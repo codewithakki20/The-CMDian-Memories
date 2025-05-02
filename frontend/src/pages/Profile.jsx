@@ -1,18 +1,15 @@
-// Profile.js
 import React, { useState } from 'react';
 import useGetUserProfile from '../hooks/useGetUserProfile';
 import { Link, useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import Button from '@mui/material/Button';
-import Badge from '@mui/material/Badge';
-import Avatar from '@mui/material/Avatar';
+import { Button, Badge, Avatar, Typography } from '@mui/material';
 import { AtSign, Heart, MessageCircle } from 'lucide-react';
-import { followUser, unfollowUser } from '../redux/authSlice';  // Import actions
+import { followUser, unfollowUser } from '../redux/authSlice';
 
 const Profile = () => {
   const params = useParams();
   const userId = params.id;
-  const { loading, error } = useGetUserProfile(userId); // Get loading and error states
+  const { loading, error } = useGetUserProfile(userId);
   const [activeTab, setActiveTab] = useState('posts');
   const dispatch = useDispatch();
 
@@ -27,52 +24,116 @@ const Profile = () => {
 
   const handleFollowUnfollow = () => {
     if (isFollowing) {
-      dispatch(unfollowUser(userProfile?._id));  // Dispatch unfollow action
+      dispatch(unfollowUser(userProfile?._id));
     } else {
-      dispatch(followUser(userProfile?._id));  // Dispatch follow action
+      dispatch(followUser(userProfile?._id));
     }
   };
 
   const displayedPost = activeTab === 'posts' ? userProfile?.posts : userProfile?.bookmarks;
 
   if (loading) {
-    return <div>Loading...</div>;  // Show loading message
+    return <div className="text-center text-gray-400">Loading...</div>;
   }
 
   if (error) {
-    return <div>Error loading profile. Please try again later.</div>;  // Show error message
+    return <div className="text-center text-red-400">Error loading profile. Please try again later.</div>;
   }
 
   return (
-    <div className='flex flex-col items-center mx-auto max-w-7xl p-6 sm:px-10'>
-      <div className='w-full grid grid-cols-1 sm:grid-cols-2 gap-10'>
+    <div className="flex flex-col items-center mx-auto max-w-7xl p-6 sm:px-10 bg-gray-900 min-h-screen">
+      <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-12">
         {/* Profile Section */}
-        <section className='flex flex-col items-center'>
-          <Avatar 
-            alt="profilephoto" 
-            src={userProfile?.profilePicture} 
-            sx={{ width: 128, height: 128 }}
-            className='border-4 border-blue-500'
+        <section className="flex flex-col items-center">
+          <Avatar
+            alt="profilephoto"
+            src={userProfile?.profilePicture}
+            sx={{ width: 144, height: 144, border: '4px solid #3b82f6' }}
+            className="shadow-lg"
           />
-          <div className='mt-4 text-center'>
-            <span className='text-2xl font-semibold'>{userProfile?.username}</span>
-            <div className='mt-2'>
+          <div className="mt-6 text-center">
+            <Typography
+              variant="h5"
+              sx={{ color: '#ffffff', fontWeight: 600 }}
+            >
+              {userProfile?.username}
+            </Typography>
+            <div className="mt-4 flex flex-col sm:flex-row gap-3">
               {isLoggedInUserProfile ? (
                 <>
-                  <Link to="/account/edit"><Button variant='outlined' className='hover:bg-gray-200 mt-2 text-sm'>Edit profile</Button></Link>
-                  <Button variant='outlined' className='hover:bg-gray-200 mt-2 text-sm'>View archive</Button>
-                  <Button variant='outlined' className='hover:bg-gray-200 mt-2 text-sm'>Ad tools</Button>
+                  <Link to="/account/edit">
+                    <Button
+                      variant="outlined"
+                      sx={{
+                        borderColor: '#3b82f6',
+                        color: '#3b82f6',
+                        borderRadius: '0.75rem',
+                        textTransform: 'none',
+                        '&:hover': { backgroundColor: '#3b82f6', color: '#ffffff' },
+                        px: 3,
+                      }}
+                    >
+                      Edit profile
+                    </Button>
+                  </Link>
+                  <Button
+                    variant="outlined"
+                    sx={{
+                      borderColor: '#3b82f6',
+                      color: '#3b82f6',
+                      borderRadius: '0.75rem',
+                      textTransform: 'none',
+                      '&:hover': { backgroundColor: '#3b82f6', color: '#ffffff' },
+                      px: 3,
+                    }}
+                  >
+                    View archive
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    sx={{
+                      borderColor: '#3b82f6',
+                      color: '#3b82f6',
+                      borderRadius: '0.75rem',
+                      textTransform: 'none',
+                      '&:hover': { backgroundColor: '#3b82f6', color: '#ffffff' },
+                      px: 3,
+                    }}
+                  >
+                    Ad tools
+                  </Button>
                 </>
               ) : (
                 <>
-                  <Button 
-                    variant='outlined' 
-                    className='h-8 mt-2 text-sm' 
+                  <Button
+                    variant="contained"
                     onClick={handleFollowUnfollow}
+                    sx={{
+                      backgroundColor: isFollowing ? '#374151' : '#3b82f6',
+                      color: '#ffffff',
+                      borderRadius: '0.75rem',
+                      textTransform: 'none',
+                      '&:hover': { backgroundColor: isFollowing ? '#4b5563' : '#2563eb' },
+                      px: 4,
+                      py: 1,
+                    }}
                   >
                     {isFollowing ? 'Unfollow' : 'Follow'}
                   </Button>
-                  <Button variant='outlined' className='h-8 mt-2 text-sm'>Message</Button>
+                  <Button
+                    variant="outlined"
+                    sx={{
+                      borderColor: '#3b82f6',
+                      color: '#3b82f6',
+                      borderRadius: '0.75rem',
+                      textTransform: 'none',
+                      '&:hover': { backgroundColor: '#3b82f6', color: '#ffffff' },
+                      px: 4,
+                      py: 1,
+                    }}
+                  >
+                    Message
+                  </Button>
                 </>
               )}
             </div>
@@ -81,19 +142,77 @@ const Profile = () => {
 
         {/* Stats Section */}
         <section>
-          <div className='flex justify-between items-center'>
-            <div className='flex gap-4'>
-              <p className='text-lg font-semibold'>{userProfile?.posts.length} <span className='text-gray-500'>posts</span></p>
-              <p className='text-lg font-semibold'>{userProfile?.followers.length} <span className='text-gray-500'>followers</span></p>
-              <p className='text-lg font-semibold'>{userProfile?.following.length} <span className='text-gray-500'>following</span></p>
+          <div className="flex justify-between items-center">
+            <div className="flex gap-8">
+              <div className="text-center">
+                <Typography
+                  variant="h6"
+                  sx={{ color: '#ffffff', fontWeight: 600 }}
+                >
+                  {userProfile?.posts.length}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{ color: '#9ca3af' }}
+                >
+                  posts
+                </Typography>
+              </div>
+              <div className="text-center">
+                <Typography
+                  variant="h6"
+                  sx={{ color: '#ffffff', fontWeight: 600 }}
+                >
+                  {userProfile?.followers.length}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{ color: '#9ca3af' }}
+                >
+                  followers
+                </Typography>
+              </div>
+              <div className="text-center">
+                <Typography
+                  variant="h6"
+                  sx={{ color: '#ffffff', fontWeight: 600 }}
+                >
+                  {userProfile?.following.length}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{ color: '#9ca3af' }}
+                >
+                  following
+                </Typography>
+              </div>
             </div>
           </div>
-          <div className='mt-4'>
-            <span className='font-semibold text-sm'>{userProfile?.bio || 'This user has no bio.'}</span>
-            <div className='mt-2 flex items-center'>
-              <Badge variant='secondary'>
-                <AtSign className='text-blue-500' /> 
-                <span className='pl-1'>{userProfile?.username}</span>
+          <div className="mt-6">
+            <Typography
+              variant="body1"
+              sx={{ color: '#d1d5db', fontWeight: 500 }}
+            >
+              {userProfile?.bio || 'This user has no bio.'}
+            </Typography>
+            <div className="mt-3 flex items-center">
+              <Badge
+                sx={{
+                  '& .MuiBadge-badge': {
+                    backgroundColor: '#3b82f6',
+                    color: '#ffffff',
+                    padding: '0.25rem',
+                    borderRadius: '0.5rem',
+                  },
+                }}
+              >
+                <AtSign className="text-blue-400 mr-1" size={18} />
+                <Typography
+                  variant="body2"
+                  sx={{ color: '#ffffff' }}
+                >
+                  {userProfile?.username}
+                </Typography>
               </Badge>
             </div>
           </div>
@@ -101,49 +220,47 @@ const Profile = () => {
       </div>
 
       {/* Tabs Section */}
-      <div className='border-t border-t-gray-200 mt-6'>
-        <div className='flex justify-center gap-6 text-lg'>
-          <span 
-            className={`py-3 cursor-pointer ${activeTab === 'posts' ? 'font-bold text-blue-500' : 'text-gray-600'}`} 
+      <div className="border-t border-gray-700 mt-8 w-full">
+        <div className="flex justify-center gap-12 text-lg">
+          <Typography
+            className={`py-4 cursor-pointer ${activeTab === 'posts' ? 'text-blue-400 font-bold border-b-2 border-blue-400' : 'text-gray-400 hover:text-gray-200'}`}
             onClick={() => handleTabChange('posts')}
+            sx={{ fontWeight: activeTab === 'posts' ? 600 : 400 }}
           >
             POSTS
-          </span>
-          <span 
-            className={`py-3 cursor-pointer ${activeTab === 'saved' ? 'font-bold text-blue-500' : 'text-gray-600'}`} 
+          </Typography>
+          <Typography
+            className={`py-4 cursor-pointer ${activeTab === 'saved' ? 'text-blue-400 font-bold border-b-2 border-blue-400' : 'text-gray-400 hover:text-gray-200'}`}
             onClick={() => handleTabChange('saved')}
+            sx={{ fontWeight: activeTab === 'saved' ? 600 : 400 }}
           >
             SAVED
-          </span>
+          </Typography>
         </div>
 
         {/* Posts Grid */}
-        <div className='grid grid-cols-3 gap-4 mt-6'>
-          {
-            displayedPost?.map((post) => {
-              return (
-                <div key={post?._id} className='relative group'>
-                  <img 
-                    src={post.image} 
-                    alt='postimage' 
-                    className='rounded-lg my-2 w-full aspect-square object-cover transition-transform duration-300 transform group-hover:scale-105'
-                  />
-                  <div className='absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300'>
-                    <div className='flex items-center text-white space-x-4'>
-                      <button className='flex items-center gap-2 hover:text-gray-300'>
-                        <Heart />
-                        <span>{post?.likes.length}</span>
-                      </button>
-                      <button className='flex items-center gap-2 hover:text-gray-300'>
-                        <MessageCircle />
-                        <span>{post?.comments.length}</span>
-                      </button>
-                    </div>
-                  </div>
+        <div className="grid grid-cols-3 gap-3 mt-6">
+          {displayedPost?.map((post) => (
+            <div key={post?._id} className="relative group">
+              <img
+                src={post.image}
+                alt="postimage"
+                className="rounded-lg w-full aspect-square object-cover transition-transform duration-300 group-hover:scale-105 shadow-md"
+              />
+              <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg">
+                <div className="flex items-center text-white space-x-6">
+                  <button className="flex items-center gap-2 hover:text-gray-300">
+                    <Heart size={20} />
+                    <span>{post?.likes.length}</span>
+                  </button>
+                  <button className="flex items-center gap-2 hover:text-gray-300">
+                    <MessageCircle size={20} />
+                    <span>{post?.comments.length}</span>
+                  </button>
                 </div>
-              );
-            })
-          }
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>

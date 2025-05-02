@@ -1,15 +1,26 @@
 import React from 'react';
 import Posts from './Posts';
+import { Typography, Box } from '@mui/material';
 
 const Feed = () => {
   return (
-    <div className="w-full max-w-7xl mx-auto bg-white shadow-md rounded-lg p-6">
-      <div className="text-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-800">CMDians' Best Moments</h2>
-        <p className="text-gray-500 mt-1">Browse the latest updates from our community.</p>
-      </div>
+    <Box className="w-full max-w-7xl mx-auto bg-gray-800 shadow-xl rounded-2xl p-6">
+      <Box className="text-center mb-8">
+        <Typography
+          variant="h4"
+          sx={{ fontWeight: 700, color: '#ffffff' }}
+        >
+          CMDians' Best Moments
+        </Typography>
+        <Typography
+          variant="body2"
+          sx={{ color: '#9ca3af', mt: 1 }}
+        >
+          Browse the latest updates from our community.
+        </Typography>
+      </Box>
       <Posts />
-    </div>
+    </Box>
   );
 };
 

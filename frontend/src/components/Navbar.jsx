@@ -32,6 +32,7 @@ import axios from "axios";
 import { setAuthUser } from "../redux/authSlice";
 import { setPosts, setSelectedPost } from "../redux/postSlice";
 import CreatePost from "../pages/CreatePost";
+import server from "../api/axiosInstance";
 
 const Navbar = () => {
   const theme = useTheme();
@@ -59,7 +60,7 @@ const Navbar = () => {
 
   const logoutHandler = async () => {
     try {
-      const res = await axios.get("https://the-cmdian-memories.onrender.com/api/v1/user/logout", {
+      const res = await axios.get(`${server}/api/v1/user/logout`, {
         withCredentials: true,
       });
       if (res.data.success) {
@@ -109,11 +110,10 @@ const Navbar = () => {
   return (
     <AppBar
       position="sticky"
-      elevation={1}
+      elevation={2}
       sx={{
-        background: "rgba(255, 255, 255, 0.9)",
-        backdropFilter: "blur(8px)",
-        borderBottom: "1px solid rgba(0,0,0,0.12)",
+        background: '#1f2937',
+        borderBottom: '1px solid #374151',
       }}
     >
       <Toolbar sx={{ display: "flex", justifyContent: "space-between" }} className="px-4">
@@ -123,7 +123,7 @@ const Navbar = () => {
             variant="h6"
             component={RouterLink}
             to="/"
-            className="text-blue-600 font-bold text-2xl"
+            sx={{ color: '#3b82f6', fontWeight: 700, fontSize: '1.5rem' }}
           >
             The CMDian Memories
           </Typography>
@@ -132,7 +132,10 @@ const Navbar = () => {
         {/* Mobile Menu Button on the Right */}
         {isMobile && (
           <Box sx={{ display: "flex", alignItems: "center" }}>
-            <IconButton onClick={handleMobileMenuOpen}>
+            <IconButton
+              onClick={handleMobileMenuOpen}
+              sx={{ color: '#9ca3af', '&:hover': { color: '#3b82f6' } }}
+            >
               <MenuIcon />
             </IconButton>
             <Menu
@@ -141,36 +144,42 @@ const Navbar = () => {
               onClose={handleMobileMenuClose}
               PaperProps={{
                 elevation: 4,
-                sx: { mt: 1.5, minWidth: 180, borderRadius: 2 },
+                sx: {
+                  mt: 1.5,
+                  minWidth: 200,
+                  borderRadius: '0.75rem',
+                  backgroundColor: '#1f2937',
+                  color: '#ffffff',
+                },
               }}
             >
               <MenuItem onClick={() => handleNavigation("Home")}>
-                <HomeIcon fontSize="small" sx={{ mr: 1 }} />
+                <HomeIcon fontSize="small" sx={{ mr: 1, color: '#9ca3af' }} />
                 Home
               </MenuItem>
               <MenuItem onClick={() => handleNavigation("Gallery")}>
-                <PhotoLibraryIcon fontSize="small" sx={{ mr: 1 }} />
+                <PhotoLibraryIcon fontSize="small" sx={{ mr: 1, color: '#9ca3af' }} />
                 Gallery
               </MenuItem>
               <MenuItem onClick={() => handleNavigation("Users")}>
-                <GroupIcon fontSize="small" sx={{ mr: 1 }} />
+                <GroupIcon fontSize="small" sx={{ mr: 1, color: '#9ca3af' }} />
                 Users
               </MenuItem>
               <MenuItem onClick={() => handleNavigation("Create")}>
-                <AddIcon fontSize="small" sx={{ mr: 1 }} />
+                <AddIcon fontSize="small" sx={{ mr: 1, color: '#9ca3af' }} />
                 Create
               </MenuItem>
               <MenuItem onClick={() => handleNavigation("Notifications")}>
-                <FavoriteIcon fontSize="small" sx={{ mr: 1 }} />
+                <FavoriteIcon fontSize="small" sx={{ mr: 1, color: '#9ca3af' }} />
                 Notifications
               </MenuItem>
               <MenuItem onClick={() => handleNavigation("Profile")}>
-                <AccountIcon fontSize="small" sx={{ mr: 1 }} />
+                <AccountIcon fontSize="small" sx={{ mr: 1, color: '#9ca3af' }} />
                 My Profile
               </MenuItem>
-              <Divider />
-              <MenuItem onClick={logoutHandler} sx={{ color: "red" }}>
-                <LogoutIcon fontSize="small" sx={{ mr: 1 }} />
+              <Divider sx={{ backgroundColor: '#374151' }} />
+              <MenuItem onClick={logoutHandler} sx={{ color: '#ef4444' }}>
+                <LogoutIcon fontSize="small" sx={{ mr: 1, color: '#ef4444' }} />
                 Logout
               </MenuItem>
             </Menu>
@@ -196,11 +205,19 @@ const Navbar = () => {
 
         {/* Avatar and Dropdown Menu for Profile (Desktop) */}
         {user && !isMobile && (
-          <IconButton onClick={handleMenuOpen} size="small">
+          <IconButton
+            onClick={handleMenuOpen}
+            size="small"
+            sx={{ p: 0 }}
+          >
             {user?.profilePicture ? (
-              <Avatar src={user.profilePicture} alt={user.username} className="w-9 h-9" />
+              <Avatar
+                src={user.profilePicture}
+                alt={user.username}
+                sx={{ width: 40, height: 40, border: '2px solid #3b82f6' }}
+              />
             ) : (
-              <AccountIcon className="text-gray-600 text-2xl" />
+              <AccountIcon sx={{ color: '#9ca3af', fontSize: '2rem' }} />
             )}
           </IconButton>
         )}
@@ -215,14 +232,24 @@ const Navbar = () => {
             sx: {
               mt: 1.5,
               minWidth: 160,
-              borderRadius: 2,
+              borderRadius: '0.75rem',
+              backgroundColor: '#1f2937',
+              color: '#ffffff',
             },
           }}
         >
-          <MenuItem onClick={() => handleNavigation("Profile")}>My Profile</MenuItem>
-          <Divider />
-          <MenuItem onClick={logoutHandler} sx={{ color: "red" }}>
-            <LogoutIcon fontSize="small" sx={{ mr: 1 }} />
+          <MenuItem
+            onClick={() => handleNavigation("Profile")}
+            sx={{ '&:hover': { backgroundColor: '#374151' } }}
+          >
+            My Profile
+          </MenuItem>
+          <Divider sx={{ backgroundColor: '#374151' }} />
+          <MenuItem
+            onClick={logoutHandler}
+            sx={{ color: '#ef4444', '&:hover': { backgroundColor: '#374151' } }}
+          >
+            <LogoutIcon fontSize="small" sx={{ mr: 1, color: '#ef4444' }} />
             Logout
           </MenuItem>
         </Menu>
@@ -237,9 +264,20 @@ const Navbar = () => {
 
 const navItem = (label, Icon, onClick) => (
   <Button
-    startIcon={<Icon />}
+    startIcon={<Icon sx={{ color: '#9ca3af' }} />}
     onClick={() => onClick(label)}
-    className="text-gray-900 font-semibold px-4 py-2 rounded-lg hover:bg-blue-100"
+    sx={{
+      color: '#ffffff',
+      fontWeight: 500,
+      px: 2,
+      py: 1,
+      borderRadius: '0.75rem',
+      textTransform: 'none',
+      '&:hover': {
+        backgroundColor: '#374151',
+        color: '#3b82f6',
+      },
+    }}
   >
     {label}
   </Button>
@@ -250,14 +288,25 @@ const navItemWithBadge = (label, Icon, count, onClick) => (
     startIcon={
       count > 0 ? (
         <Badge badgeContent={count} color="error">
-          <Icon />
+          <Icon sx={{ color: '#9ca3af' }} />
         </Badge>
       ) : (
-        <Icon />
+        <Icon sx={{ color: '#9ca3af' }} />
       )
     }
     onClick={() => onClick(label)}
-    className="text-gray-900 font-semibold px-4 py-2 rounded-lg hover:bg-blue-100"
+    sx={{
+      color: '#ffffff',
+      fontWeight: 500,
+      px: 2,
+      py: 1,
+      borderRadius: '0.75rem',
+      textTransform: 'none',
+      '&:hover': {
+        backgroundColor: '#374151',
+        color: '#3b82f6',
+      },
+    }}
   >
     {label}
   </Button>

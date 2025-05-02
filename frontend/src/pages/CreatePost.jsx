@@ -15,6 +15,7 @@ import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { setPosts } from '../redux/postSlice';
 import { readFileAsDataURL } from '../lib/utils';
+import server from '../api/axiosInstance';
 
 const CreatePost = ({ open, setOpen }) => {
   const imageRef = useRef();
@@ -43,7 +44,7 @@ const CreatePost = ({ open, setOpen }) => {
     try {
       setLoading(true);
       const res = await axios.post(
-        'https://the-cmdian-memories.onrender.com/api/v1/post/addpost',
+        `${server}/api/v1/post/addpost`,
         formData,
         {
           headers: { 'Content-Type': 'multipart/form-data' },
@@ -54,6 +55,9 @@ const CreatePost = ({ open, setOpen }) => {
         dispatch(setPosts([res.data.post, ...posts]));
         toast.success(res.data.message);
         setOpen(false);
+        setCaption('');
+        setImagePreview('');
+        setFile('');
       }
     } catch (error) {
       toast.error(error.response?.data?.message || 'Something went wrong');
@@ -63,19 +67,36 @@ const CreatePost = ({ open, setOpen }) => {
   };
 
   return (
-    <Dialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
-      <DialogTitle className="text-center font-bold text-lg text-gray-800">
+    <Dialog
+      open={open}
+      onClose={() => setOpen(false)}
+      maxWidth="sm"
+      fullWidth
+      PaperProps={{
+        sx: { borderRadius: '1rem', backgroundColor: '#1f2937' },
+      }}
+    >
+      <DialogTitle sx={{ textAlign: 'center', color: '#ffffff', fontWeight: 600, fontSize: '1.25rem' }}>
         Create New Post
       </DialogTitle>
-      <DialogContent className="px-5 py-4">
-        <Box display="flex" alignItems="center" gap={2} mb={2}>
-          <Avatar src={user?.profilePicture} sx={{ width: 40, height: 40 }} />
+      <DialogContent className="px-6 py-5">
+        <Box display="flex" alignItems="center" gap={3} mb={3}>
+          <Avatar
+            src={user?.profilePicture}
+            sx={{ width: 48, height: 48, border: '2px solid #3b82f6' }}
+          />
           <Box>
-            <Typography variant="subtitle2" className="font-semibold text-gray-700">
+            <Typography
+              variant="subtitle2"
+              sx={{ fontWeight: 600, color: '#ffffff' }}
+            >
               {user?.username}
             </Typography>
-            <Typography variant="caption" className="text-gray-500">
-              Bio here...
+            <Typography
+              variant="caption"
+              sx={{ color: '#9ca3af' }}
+            >
+              {user?.bio || 'Bio here...'}
             </Typography>
           </Box>
         </Box>
@@ -88,25 +109,37 @@ const CreatePost = ({ open, setOpen }) => {
           multiline
           rows={3}
           variant="outlined"
-          margin="dense"
-          className="mb-4"
           sx={{
             '& .MuiOutlinedInput-root': {
-              borderRadius: '12px',
+              borderRadius: '0.75rem',
+              backgroundColor: '#374151',
+              color: '#ffffff',
+              '& fieldset': {
+                borderColor: '#4b5563',
+              },
+              '&:hover fieldset': {
+                borderColor: '#3b82f6',
+              },
+              '&.Mui-focused fieldset': {
+                borderColor: '#3b82f6',
+              },
+            },
+            '& .MuiInputBase-input': {
+              color: '#ffffff',
             },
           }}
         />
 
         {imagePreview && (
           <Box
-            mt={2}
+            mt={3}
             display="flex"
             justifyContent="center"
             alignItems="center"
             height={250}
             overflow="hidden"
             borderRadius={2}
-            sx={{ border: '1px solid #ccc' }}
+            sx={{ border: '1px solid #4b5563' }}
           >
             <img
               src={imagePreview}
@@ -126,9 +159,22 @@ const CreatePost = ({ open, setOpen }) => {
 
         <Box mt={3} textAlign="center">
           <Button
-            variant="contained"
+            variant="outlined"
             onClick={() => imageRef.current.click()}
-            className="bg-blue-500 hover:bg-blue-400 text-white rounded-full py-2 px-6"
+            sx={{
+              borderRadius: '0.75rem',
+              borderColor: '#3b82f6',
+              color: '#3b82f6',
+              textTransform: 'none',
+              fontWeight: 600,
+              px: 4,
+              py: 1,
+              '&:hover': {
+                backgroundColor: '#3b82f6',
+                color: '#ffffff',
+                borderColor: '#3b82f6',
+              },
+            }}
           >
             Select from computer
           </Button>
@@ -138,12 +184,18 @@ const CreatePost = ({ open, setOpen }) => {
           <Box mt={3}>
             <Button
               variant="contained"
-              color="primary"
               fullWidth
               onClick={createPostHandler}
               disabled={loading}
-              startIcon={loading && <CircularProgress size={18} sx={{ color: 'white' }} />}
-              className="py-2 text-lg font-semibold"
+              startIcon={loading && <CircularProgress size={18} sx={{ color: '#ffffff' }} />}
+              sx={{
+                borderRadius: '0.75rem',
+                backgroundColor: loading ? '#4b5563' : '#3b82f6',
+                '&:hover': { backgroundColor: loading ? '#4b5563' : '#2563eb' },
+                textTransform: 'none',
+                fontWeight: 600,
+                py: 1.5,
+              }}
             >
               {loading ? 'Please wait...' : 'Post'}
             </Button>

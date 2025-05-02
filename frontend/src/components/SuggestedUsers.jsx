@@ -8,15 +8,23 @@ const SuggestedUsers = () => {
   const { suggestedUsers } = useSelector((store) => store.auth);
 
   return (
-    <div className="mt-10 px-4 sm:px-6 lg:px-0">
+    <div className="mt-12 px-4 sm:px-6 lg:px-0 bg-gray-900">
       {/* Header section */}
-      <div className="flex items-center justify-between mb-4">
-        <Typography variant="h6" className="text-gray-900 font-semibold text-base sm:text-lg">
+      <div className="flex items-center justify-between mb-6">
+        <Typography
+          variant="h6"
+          sx={{ color: '#ffffff', fontWeight: 600, fontSize: { xs: '1rem', sm: '1.125rem' } }}
+        >
           Suggested for you
         </Typography>
         <Button
-          className="text-blue-600 hover:text-blue-800 text-sm font-medium"
-          sx={{ textTransform: 'none' }}
+          sx={{
+            color: '#3b82f6',
+            fontWeight: 500,
+            textTransform: 'none',
+            fontSize: '0.875rem',
+            '&:hover': { color: '#2563eb' },
+          }}
         >
           See All
         </Button>
@@ -27,7 +35,7 @@ const SuggestedUsers = () => {
         {suggestedUsers?.map((user) => (
           <div
             key={user._id}
-            className="flex items-center justify-between bg-white px-4 py-3 rounded-lg shadow-sm hover:shadow-lg transition-all duration-300"
+            className="flex items-center justify-between bg-gray-800 px-4 py-4 rounded-xl shadow-md hover:shadow-xl transition-all duration-300"
           >
             {/* User avatar and info */}
             <div className="flex items-center gap-4">
@@ -35,17 +43,22 @@ const SuggestedUsers = () => {
                 <Avatar
                   src={user.profilePicture}
                   alt={user.username}
-                  sx={{ width: 48, height: 48 }}
-                  className="border-2 border-blue-500"
+                  sx={{ width: 52, height: 52, border: '2px solid #3b82f6' }}
                 />
               </Link>
               <div>
-                <Typography variant="body1" className="font-semibold text-gray-800 text-sm">
+                <Typography
+                  variant="body1"
+                  sx={{ fontWeight: 600, color: '#ffffff', fontSize: '0.875rem' }}
+                >
                   <Link to={`/profile/${user._id}`} className="hover:underline">
                     {user.username}
                   </Link>
                 </Typography>
-                <Typography variant="body2" className="text-gray-600 text-xs sm:text-sm">
+                <Typography
+                  variant="body2"
+                  sx={{ color: '#9ca3af', fontSize: { xs: '0.75rem', sm: '0.875rem' } }}
+                >
                   {user.bio || 'No bio available.'}
                 </Typography>
               </div>
@@ -56,13 +69,14 @@ const SuggestedUsers = () => {
               variant="contained"
               size="small"
               sx={{
-                borderRadius: '20px',
+                borderRadius: '9999px',
                 textTransform: 'none',
                 fontWeight: 600,
                 backgroundColor: '#3b82f6',
                 '&:hover': { backgroundColor: '#2563eb' },
                 fontSize: '0.75rem',
-                padding: '4px 16px',
+                px: 3,
+                py: 0.5,
               }}
             >
               Follow

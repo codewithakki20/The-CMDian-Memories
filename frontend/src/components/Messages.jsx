@@ -19,23 +19,37 @@ const Messages = ({ selectedUser }) => {
   }, [messages]);
 
   return (
-    <Box className="flex-1 p-6 bg-gray-900 text-white rounded-xl shadow-lg overflow-y-auto">
+    <Box className="flex-1 p-6 bg-gray-800 rounded-2xl shadow-xl overflow-y-auto">
       {/* User Profile Section */}
-      <Box className="flex flex-col items-center justify-center mb-8">
-        <Avatar sx={{ width: 80, height: 80 }} className="border-2 border-gray-700">
+      <Box className="flex flex-col items-center justify-center mb-10">
+        <Avatar
+          sx={{ width: 96, height: 96, border: '3px solid #3b82f6' }}
+          className="shadow-lg"
+        >
           <img
             src={selectedUser?.profilePicture}
             alt="profile"
             className="w-full h-full object-cover rounded-full"
           />
         </Avatar>
-        <Typography variant="h6" className="mt-4 text-xl font-semibold text-white">
+        <Typography
+          variant="h6"
+          sx={{ mt: 3, color: '#ffffff', fontWeight: 600, fontSize: '1.25rem' }}
+        >
           {selectedUser?.username}
         </Typography>
         <Button
           variant="contained"
-          color="primary"
-          className="mt-4 px-6 py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
+          sx={{
+            mt: 3,
+            borderRadius: '0.75rem',
+            backgroundColor: '#3b82f6',
+            '&:hover': { backgroundColor: '#2563eb' },
+            textTransform: 'none',
+            fontWeight: 600,
+            px: 4,
+            py: 1,
+          }}
           onClick={() => navigate(`/profile/${selectedUser?._id}`)}
         >
           View Profile
@@ -53,10 +67,10 @@ const Messages = ({ selectedUser }) => {
                 className={`flex ${isOwnMessage ? 'justify-end' : 'justify-start'}`}
               >
                 <Box
-                  className={`px-5 py-3 rounded-xl max-w-[70%] text-sm shadow-md ${
+                  className={`px-4 py-2 rounded-xl max-w-[70%] text-sm shadow-md ${
                     isOwnMessage
-                      ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-br-none'
-                      : 'bg-gray-200 text-black rounded-bl-none'
+                      ? 'bg-gradient-to-r from-blue-600 to-blue-800 text-white rounded-br-none'
+                      : 'bg-gray-700 text-gray-100 rounded-bl-none'
                   }`}
                 >
                   {msg.message}
@@ -65,7 +79,10 @@ const Messages = ({ selectedUser }) => {
             );
           })
         ) : (
-          <Typography variant="body2" className="text-center text-gray-400">
+          <Typography
+            variant="body2"
+            sx={{ textAlign: 'center', color: '#9ca3af' }}
+          >
             No messages yet.
           </Typography>
         )}

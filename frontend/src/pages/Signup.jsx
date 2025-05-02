@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { toast } from 'sonner';
-import { Link, useNavigate } from 'react-router-dom';
-import { Loader2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Container, Paper, Typography, Box, TextField, Button, CircularProgress, Stack, Link as MuiLink } from '@mui/material';
+import server from '../api/axiosInstance';
 
 const Signup = () => {
   const [input, setInput] = useState({
@@ -24,7 +24,7 @@ const Signup = () => {
     e.preventDefault();
     try {
       setLoading(true);
-      const res = await axios.post('https://the-cmdian-memories.onrender.com/api/v1/user/register', input, {
+      const res = await axios.post(`${server}/api/v1/user/register`, input, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -51,24 +51,39 @@ const Signup = () => {
     if (user) {
       navigate('/');
     }
-  }, [user]);
+  }, [user, navigate]);
 
   return (
-    <Container maxWidth="sm" className="mt-10">
-      <Paper elevation={6} className="p-5 rounded-lg shadow-lg">
-        <Box textAlign="center" className="mb-4">
-          <Typography component="h1" variant="h4" className="font-bold text-[#3498db]" gutterBottom>
+    <Container maxWidth="sm" className="mt-16 bg-gray-900 min-h-screen">
+      <Paper
+        elevation={6}
+        sx={{ p: 6, borderRadius: '1rem', backgroundColor: '#1f2937' }}
+      >
+        <Box textAlign="center" className="mb-8">
+          <Typography
+            component="h1"
+            variant="h4"
+            sx={{ fontWeight: 700, color: '#ffffff', mb: 2 }}
+          >
             Create an Account
           </Typography>
-          <Typography variant="body2" className="text-gray-500">
+          <Typography
+            variant="body2"
+            sx={{ color: '#9ca3af' }}
+          >
             Join The CMDians Memories today!
           </Typography>
         </Box>
 
-        <form onSubmit={signupHandler} className="flex flex-col gap-6 p-8">
+        <form onSubmit={signupHandler} className="flex flex-col gap-6">
           <Stack spacing={3}>
-            <div>
-              <span className="font-medium text-sm">Username</span>
+            <Box>
+              <Typography
+                variant="body2"
+                sx={{ fontWeight: 500, color: '#ffffff', mb: 1 }}
+              >
+                Username
+              </Typography>
               <TextField
                 fullWidth
                 type="text"
@@ -77,11 +92,34 @@ const Signup = () => {
                 onChange={changeEventHandler}
                 variant="outlined"
                 required
-                className="my-2"
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: '0.75rem',
+                    backgroundColor: '#374151',
+                    color: '#ffffff',
+                    '& fieldset': {
+                      borderColor: '#4b5563',
+                    },
+                    '&:hover fieldset': {
+                      borderColor: '#3b82f6',
+                    },
+                    '&.Mui-focused fieldset': {
+                      borderColor: '#3b82f6',
+                    },
+                  },
+                  '& .MuiInputBase-input': {
+                    color: '#ffffff',
+                  },
+                }}
               />
-            </div>
-            <div>
-              <span className="font-medium text-sm">Email</span>
+            </Box>
+            <Box>
+              <Typography
+                variant="body2"
+                sx={{ fontWeight: 500, color: '#ffffff', mb: 1 }}
+              >
+                Email
+              </Typography>
               <TextField
                 fullWidth
                 type="email"
@@ -90,11 +128,34 @@ const Signup = () => {
                 onChange={changeEventHandler}
                 variant="outlined"
                 required
-                className="my-2"
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: '0.75rem',
+                    backgroundColor: '#374151',
+                    color: '#ffffff',
+                    '& fieldset': {
+                      borderColor: '#4b5563',
+                    },
+                    '&:hover fieldset': {
+                      borderColor: '#3b82f6',
+                    },
+                    '&.Mui-focused fieldset': {
+                      borderColor: '#3b82f6',
+                    },
+                  },
+                  '& .MuiInputBase-input': {
+                    color: '#ffffff',
+                  },
+                }}
               />
-            </div>
-            <div>
-              <span className="font-medium text-sm">Password</span>
+            </Box>
+            <Box>
+              <Typography
+                variant="body2"
+                sx={{ fontWeight: 500, color: '#ffffff', mb: 1 }}
+              >
+                Password
+              </Typography>
               <TextField
                 fullWidth
                 type="password"
@@ -103,26 +164,59 @@ const Signup = () => {
                 onChange={changeEventHandler}
                 variant="outlined"
                 required
-                className="my-2"
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: '0.75rem',
+                    backgroundColor: '#374151',
+                    color: '#ffffff',
+                    '& fieldset': {
+                      borderColor: '#4b5563',
+                    },
+                    '&:hover fieldset': {
+                      borderColor: '#3b82f6',
+                    },
+                    '&.Mui-focused fieldset': {
+                      borderColor: '#3b82f6',
+                    },
+                  },
+                  '& .MuiInputBase-input': {
+                    color: '#ffffff',
+                  },
+                }}
               />
-            </div>
+            </Box>
 
             {loading ? (
               <Button
                 fullWidth
                 variant="contained"
                 disabled
-                className="flex items-center justify-center bg-gray-500"
+                sx={{
+                  borderRadius: '0.75rem',
+                  backgroundColor: '#4b5563',
+                  color: '#ffffff',
+                  py: 1.5,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
               >
-                <CircularProgress size={24} className="text-white" />
-                <span className="ml-2 text-white">Please wait...</span>
+                <CircularProgress size={24} sx={{ color: '#ffffff', mr: 2 }} />
+                Please wait...
               </Button>
             ) : (
               <Button
                 type="submit"
                 fullWidth
                 variant="contained"
-                className="bg-gradient-to-r from-[#3498db] to-[#2ecc71] text-white font-bold hover:from-[#2ecc71] hover:to-[#3498db] transition-all duration-300"
+                sx={{
+                  borderRadius: '0.75rem',
+                  backgroundColor: '#3b82f6',
+                  '&:hover': { backgroundColor: '#2563eb' },
+                  textTransform: 'none',
+                  fontWeight: 600,
+                  py: 1.5,
+                }}
               >
                 Signup
               </Button>
@@ -130,11 +224,14 @@ const Signup = () => {
           </Stack>
 
           <Box mt={4} textAlign="center">
-            <Typography variant="body2" className="text-gray-600">
+            <Typography
+              variant="body2"
+              sx={{ color: '#9ca3af' }}
+            >
               Already have an account?{' '}
               <MuiLink
                 href="/login"
-                className="text-[#3498db] hover:text-[#2ecc71] font-semibold"
+                sx={{ color: '#3b82f6', '&:hover': { color: '#2563eb' } }}
               >
                 Login
               </MuiLink>

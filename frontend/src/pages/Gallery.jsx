@@ -8,9 +8,10 @@ import {
   Box,
   Chip,
   Typography,
+  Button,
+  Stack,
 } from '@mui/material';
 import { Close as CloseIcon, Share as ShareIcon } from '@mui/icons-material';
-import { Stack, Button } from '@mui/material';
 
 // Define the dummy memories data
 const memories = [
@@ -18,13 +19,11 @@ const memories = [
   { id: 2, title: 'College Trip to Parsahi', description: 'Our amazing trip to Parsahi, full of adventure!', imageUrl: '/Parsahi/Parsahi2.jpg', category: 'parsahi' },
   { id: 3, title: 'College Trip to Parsahi', description: 'Our amazing trip to Parsahi, full of adventure!', imageUrl: '/Parsahi/Parsahi3.jpg', category: 'parsahi' },
   { id: 4, title: 'College Trip to Parsahi', description: 'Our amazing trip to Parsahi, full of adventure!', imageUrl: '/Parsahi/Parsahi4.jpg', category: 'parsahi' },
-
   { id: 5, title: 'College Trip to Chaturgarh', description: 'Our amazing trip to Chaturgarh, full of adventure!', imageUrl: '/Chaturgarh/Chaturgarh1.jpg', category: 'chaturgarh' },
   { id: 6, title: 'College Trip to Chaturgarh', description: 'Our amazing trip to Chaturgarh, full of adventure!', imageUrl: '/Chaturgarh/Chaturgarh2.jpg', category: 'chaturgarh' },
   { id: 7, title: 'College Trip to Chaturgarh', description: 'Our amazing trip to Chaturgarh, full of adventure!', imageUrl: '/Chaturgarh/Chaturgarh3.jpg', category: 'chaturgarh' },
   { id: 8, title: 'College Trip to Chaturgarh', description: 'Our amazing trip to Chaturgarh, full of adventure!', imageUrl: '/Chaturgarh/Chaturgarh4.jpg', category: 'chaturgarh' },
   { id: 9, title: 'College Trip to Chaturgarh', description: 'Our amazing trip to Chaturgarh, full of adventure!', imageUrl: '/Chaturgarh/Chaturgarh5.jpg', category: 'chaturgarh' },
-
   { id: 10, title: 'College Trip to Golden Island', description: 'Our amazing trip to Golden Island, full of adventure!', imageUrl: '/Golden Island/GoldenIsland1.jpg', category: 'goldenisland' },
   { id: 11, title: 'College Trip to Golden Island', description: 'Our amazing trip to Golden Island, full of adventure!', imageUrl: '/Golden Island/GoldenIsland2.jpg', category: 'goldenisland' },
   { id: 12, title: 'College Trip to Golden Island', description: 'Our amazing trip to Golden Island, full of adventure!', imageUrl: '/Golden Island/GoldenIsland3.jpg', category: 'goldenisland' },
@@ -34,16 +33,14 @@ const memories = [
   { id: 16, title: 'College Trip to Golden Island', description: 'Our amazing trip to Golden Island, full of adventure!', imageUrl: '/Golden Island/GoldenIsland7.jpg', category: 'goldenisland' },
   { id: 17, title: 'College Trip to Golden Island', description: 'Our amazing trip to Golden Island, full of adventure!', imageUrl: '/Golden Island/GoldenIsland8.jpg', category: 'goldenisland' },
   { id: 18, title: 'College Trip to Golden Island', description: 'Our amazing trip to Golden Island, full of adventure!', imageUrl: '/Golden Island/GoldenIsland9.jpg', category: 'goldenisland' },
-
   { id: 19, title: 'Last day of college', description: 'Our amazing trip to Golden Island, full of adventure!', imageUrl: '/Last day/Last day1.jpg', category: 'lastday' },
   { id: 20, title: 'Last day of college', description: 'Our amazing trip to Golden Island, full of adventure!', imageUrl: '/Last day/Last day2.jpg', category: 'lastday' },
   { id: 21, title: 'Last day of college', description: 'Our amazing trip to Golden Island, full of adventure!', imageUrl: '/Last day/Last day3.jpg', category: 'lastday' },
   { id: 22, title: 'Last day of college', description: 'Our amazing trip to Golden Island, full of adventure!', imageUrl: '/Last day/Last day4.jpg', category: 'lastday' },
-
-  { id: 23, title: 'Pre Holi celebration of  collage', description: 'Our amazing trip to Golden Island, full of adventure!', imageUrl: '/Holi/Holi1.jpg', category: 'holi' },
-  { id: 24, title: 'Pre Holi celebration of  collage', description: 'Our amazing trip to Golden Island, full of adventure!', imageUrl: '/Holi/Holi2.jpg', category: 'holi' },
-  { id: 25, title: 'Pre Holi celebration of  collage', description: 'Our amazing trip to Golden Island, full of adventure!', imageUrl: '/Holi/Holi3.jpg', category: 'holi' },
-  { id: 26, title: 'Pre Holi celebration of  collage', description: 'Our amazing trip to Golden Island, full of adventure!', imageUrl: '/Holi/Holi4.jpg', category: 'holi' },
+  { id: 23, title: 'Pre Holi celebration of collage', description: 'Our amazing trip to Golden Island, full of adventure!', imageUrl: '/Holi/Holi1.jpg', category: 'holi' },
+  { id: 24, title: 'Pre Holi celebration of collage', description: 'Our amazing trip to Golden Island, full of adventure!', imageUrl: '/Holi/Holi2.jpg', category: 'holi' },
+  { id: 25, title: 'Pre Holi celebration of collage', description: 'Our amazing trip to Golden Island, full of adventure!', imageUrl: '/Holi/Holi3.jpg', category: 'holi' },
+  { id: 26, title: 'Pre Holi celebration of collage', description: 'Our amazing trip to Golden Island, full of adventure!', imageUrl: '/Holi/Holi4.jpg', category: 'holi' },
 ];
 
 const categories = [
@@ -53,7 +50,7 @@ const categories = [
   { id: 'chaturgarh', label: 'Chaturgarh' },
   { id: 'parsahi', label: 'Parsahi' },
   { id: 'holi', label: 'Holi' },
-  { id: 'lastday', label: ' Last Day' },
+  { id: 'lastday', label: 'Last Day' },
 ];
 
 const Gallery = () => {
@@ -90,27 +87,48 @@ const Gallery = () => {
   };
 
   return (
-    <Container maxWidth="lg" className="py-6">
-      <Box textAlign="center" mb={5}>
-        <Typography variant="h3" fontWeight="bold" className="text-blue-600">
+    <Container maxWidth="lg" className="py-10 bg-gray-900 min-h-screen">
+      <Box textAlign="center" mb={8}>
+        <Typography
+          variant="h3"
+          sx={{ fontWeight: 700, color: '#ffffff', mb: 2 }}
+        >
           📸 CMDians Memories
         </Typography>
-        <Typography variant="subtitle1" color="text.secondary" className="mt-1">
+        <Typography
+          variant="subtitle1"
+          sx={{ color: '#9ca3af', fontSize: '1.1rem' }}
+        >
           Relive the golden moments of college life!
         </Typography>
       </Box>
 
       {/* Categories */}
-      <Stack direction="row" spacing={2} justifyContent="center" flexWrap="wrap" mb={5}>
+      <Stack
+        direction="row"
+        spacing={2}
+        justifyContent="center"
+        flexWrap="wrap"
+        mb={6}
+      >
         {categories.map(category => (
           <Button
             key={category.id}
             variant={selectedCategory === category.id ? 'contained' : 'outlined'}
             onClick={() => setSelectedCategory(category.id)}
-            className={`text-sm md:text-base ${selectedCategory === category.id ? 'bg-blue-600 text-white' : 'text-blue-600'}`}
             sx={{
-              borderRadius: '20px',
+              borderRadius: '9999px',
+              textTransform: 'none',
               fontWeight: 500,
+              px: 3,
+              py: 1,
+              backgroundColor: selectedCategory === category.id ? '#3b82f6' : 'transparent',
+              color: selectedCategory === category.id ? '#ffffff' : '#3b82f6',
+              borderColor: '#3b82f6',
+              '&:hover': {
+                backgroundColor: selectedCategory === category.id ? '#2563eb' : '#3b82f6',
+                color: '#ffffff',
+              },
             }}
           >
             {category.label}
@@ -124,39 +142,70 @@ const Gallery = () => {
           <div
             key={memory.id}
             onClick={() => handleMemoryClick(memory)}
-            className="cursor-pointer rounded-lg overflow-hidden shadow-lg transition-transform duration-300 hover:scale-105 hover:shadow-xl"
+            className="cursor-pointer rounded-xl overflow-hidden bg-gray-800 shadow-lg transition-transform duration-300 hover:scale-105 hover:shadow-2xl"
           >
             <img
               src={memory.imageUrl}
               alt={memory.title}
               className="w-full h-48 object-cover"
             />
-            <Box p={2}>
-              <Typography variant="subtitle1" fontWeight="bold" className="truncate">
+            <Box p={3}>
+              <Typography
+                variant="subtitle1"
+                sx={{ fontWeight: 600, color: '#ffffff', mb: 1 }}
+                className="truncate"
+              >
                 {memory.title}
               </Typography>
-              <Chip label={memory.category} size="small" className="mt-2 bg-gray-300" />
+              <Chip
+                label={memory.category}
+                size="small"
+                sx={{
+                  backgroundColor: '#374151',
+                  color: '#ffffff',
+                  fontWeight: 500,
+                }}
+              />
             </Box>
           </div>
         ))}
       </div>
 
       {/* Memory Details Dialog */}
-      <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
+      <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        maxWidth="sm"
+        fullWidth
+        PaperProps={{
+          sx: { borderRadius: '1rem', backgroundColor: '#1f2937' },
+        }}
+      >
         <DialogTitle>
           <Box display="flex" justifyContent="space-between" alignItems="center">
-            <Typography variant="h6">Memory Details</Typography>
+            <Typography
+              variant="h6"
+              sx={{ color: '#ffffff', fontWeight: 600 }}
+            >
+              Memory Details
+            </Typography>
             <Box>
-              <IconButton onClick={handleShare}>
+              <IconButton
+                onClick={handleShare}
+                sx={{ color: '#9ca3af', '&:hover': { color: '#3b82f6' } }}
+              >
                 <ShareIcon />
               </IconButton>
-              <IconButton onClick={handleCloseDialog}>
+              <IconButton
+                onClick={handleCloseDialog}
+                sx={{ color: '#9ca3af', '&:hover': { color: '#3b82f6' } }}
+              >
                 <CloseIcon />
               </IconButton>
             </Box>
           </Box>
         </DialogTitle>
-        <DialogContent dividers>
+        <DialogContent dividers sx={{ backgroundColor: '#1f2937' }}>
           {selectedMemory && (
             <Box>
               <Box sx={{ position: 'relative', width: '100%', pt: '56.25%' }}>
@@ -166,13 +215,27 @@ const Gallery = () => {
                   className="absolute top-0 left-0 w-full h-full object-cover rounded-lg"
                 />
               </Box>
-              <Typography variant="h5" className="mt-3">
+              <Typography
+                variant="h5"
+                sx={{ color: '#ffffff', mt: 3, fontWeight: 600 }}
+              >
                 {selectedMemory.title}
               </Typography>
-              <Typography variant="body2" className="mt-2">
+              <Typography
+                variant="body2"
+                sx={{ color: '#d1d5db', mt: 2, lineHeight: 1.6 }}
+              >
                 {selectedMemory.description}
               </Typography>
-              <Chip label={selectedMemory.category} sx={{ mt: 2, bgcolor: 'gray.200' }} />
+              <Chip
+                label={selectedMemory.category}
+                sx={{
+                  mt: 2,
+                  backgroundColor: '#374151',
+                  color: '#ffffff',
+                  fontWeight: 500,
+                }}
+              />
             </Box>
           )}
         </DialogContent>

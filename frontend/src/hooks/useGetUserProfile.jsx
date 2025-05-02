@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import axios from 'axios';
 import { setUserProfile } from '../redux/authSlice';
 import { useEffect, useState } from 'react';
+import server from '../api/axiosInstance';
 
 const useGetUserProfile = (userId) => {
   const dispatch = useDispatch();
@@ -13,7 +14,7 @@ const useGetUserProfile = (userId) => {
     const fetchUserProfile = async () => {
       try {
         setLoading(true);  // Start loading
-        const res = await axios.get(`https://the-cmdian-memories.onrender.com/api/v1/user/${userId}/profile`, { withCredentials: true });
+        const res = await axios.get(`${server}/api/v1/user/${userId}/profile`, { withCredentials: true });
         if (res.data.success) {
           dispatch(setUserProfile(res.data.user));
         }

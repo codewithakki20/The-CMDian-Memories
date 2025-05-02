@@ -3,23 +3,20 @@ import {
   Avatar,
   Badge,
   Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   IconButton,
   Menu,
   MenuItem,
   TextField,
   Typography
 } from '@mui/material';
-import { Bookmark, Message, MoreHoriz, Share  } from '@mui/icons-material';
+import { Bookmark, Message, MoreHoriz, Share } from '@mui/icons-material';
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import { toast } from 'sonner';
 import { setPosts, setSelectedPost } from '../redux/postSlice';
 import CommentDialog from '../components/CommentDialog';
+import server from '../api/axiosInstance';
 
 const Post = ({ post }) => {
   const [text, setText] = useState("");
@@ -38,7 +35,7 @@ const Post = ({ post }) => {
   const likeOrDislikeHandler = async () => {
     try {
       const action = liked ? 'dislike' : 'like';
-      const res = await axios.get(`https://the-cmdian-memories.onrender.com/api/v1/post/${post._id}/${action}`, {
+      const res = await axios.get(`${server}/api/v1/post/${post._id}/${action}`, {
         withCredentials: true,
       });
       if (res.data.success) {
@@ -48,9 +45,9 @@ const Post = ({ post }) => {
         const updatedPosts = posts.map(p =>
           p._id === post._id
             ? {
-              ...p,
-              likes: liked ? p.likes.filter(id => id !== user._id) : [...p.likes, user._id]
-            }
+                ...p,
+                likes: liked ? p.likes.filter(id => id !== user._id) : [...p.likes, user._id]
+              }
             : p
         );
         dispatch(setPosts(updatedPosts));
@@ -64,7 +61,7 @@ const Post = ({ post }) => {
   const commentHandler = async () => {
     try {
       const res = await axios.post(
-        `https://the-cmdian-memories.onrender.com/api/v1/post/${post._id}/comment`,
+        `${server}/api/v1/post/${post._id}/comment`,
         { text },
         {
           headers: { 'Content-Type': 'application/json' },
@@ -88,7 +85,7 @@ const Post = ({ post }) => {
 
   const deletePostHandler = async () => {
     try {
-      const res = await axios.delete(`https://the-cmdian-memories.onrender.com/api/v1/post/delete/${post._id}`, {
+      const res = await axios.delete(`${server}/api/v1/post/delete/${post._id}`, {
         withCredentials: true,
       });
       if (res.data.success) {
@@ -104,7 +101,7 @@ const Post = ({ post }) => {
 
   const bookmarkHandler = async () => {
     try {
-      const res = await axios.get(`https://the-cmdian-memories.onrender.com/api/v1/post/${post._id}/bookmark`, {
+      const res = await axios.get(`${server}/api/v1/post/${post._id}/bookmark`, {
         withCredentials: true,
       });
       if (res.data.success) {
@@ -116,56 +113,134 @@ const Post = ({ post }) => {
   };
 
   return (
-    <div className="my-10 mx-auto w-full max-w-md bg-white shadow rounded-xl overflow-hidden">
+    <div className="my-8 mx-auto w-full max-w-md bg-gray-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300">
       {/* Header */}
       <div className="flex justify-between items-center p-4">
-        <div className="flex items-center gap-2">
-          <Avatar src={post.author?.profilePicture} />
+        <div className="flex items-center gap-3">
+          <Avatar
+            src={post.author?.profilePicture}
+            sx={{ width: 44, height: 44, border: '2px solid #3b82f6' }}
+          />
           <div className="flex items-center gap-2">
-            <Typography variant="subtitle1">{post.author?.username}</Typography>
+            <Typography
+              variant="subtitle1"
+              sx={{ color: '#ffffff', fontWeight: 600 }}
+            >
+              {post.author?.username}
+            </Typography>
             {user?._id === post.author?._id && (
-              <Badge color="secondary" variant="dot">Author</Badge>
+              <Badge
+                color="primary"
+                variant="dot"
+                sx={{ '& .MuiBadge-dot': { backgroundColor: '#3b82f6' } }}
+              >
+                <Typography
+                  variant="caption"
+                  sx={{ color: '#3b82f6', fontWeight: 500 }}
+                >
+                  Author
+                </Typography>
+              </Badge>
             )}
           </div>
         </div>
-        <IconButton onClick={handleMenuOpen}>
+        <IconButton
+          onClick={handleMenuOpen}
+          sx={{ color: '#9ca3af', '&:hover': { color: '#3b82f6' } }}
+        >
           <MoreHoriz />
         </IconButton>
-        <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={handleMenuClose}>
-          {post?.author?._id !== user?._id && <MenuItem>Unfollow</MenuItem>}
-          <MenuItem onClick={bookmarkHandler}>Add to favorites</MenuItem>
+        <Menu
+          anchorEl={menuAnchor}
+          open={Boolean(menuAnchor)}
+          onClose={handleMenuClose}
+          PaperProps={{
+            sx: { backgroundColor: '#1f2937', color: '#ffffff', borderRadius: '0.75rem' },
+          }}
+        >
+          {post?.author?._id !== user?._id && (
+            <MenuItem
+              onClick={handleMenuClose}
+              sx={{ '&:hover': { backgroundColor: '#374151' } }}
+            >
+              Unfollow
+            </MenuItem>
+          )}
+          <MenuItem
+            onClick={() => {
+              bookmarkHandler();
+              handleMenuClose();
+            }}
+            sx={{ '&:hover': { backgroundColor: '#374151' } }}
+          >
+            Add to favorites
+          </MenuItem>
           {user?._id === post?.author?._id && (
-            <MenuItem onClick={deletePostHandler}>Delete</MenuItem>
+            <MenuItem
+              onClick={() => {
+                deletePostHandler();
+                handleMenuClose();
+              }}
+              sx={{ '&:hover': { backgroundColor: '#374151' } }}
+            >
+              Delete
+            </MenuItem>
           )}
         </Menu>
       </div>
 
       {/* Image */}
-      <img src={post.image} alt="Post" className="w-full object-cover aspect-square" />
+      <img
+        src={post.image}
+        alt="Post"
+        className="w-full object-cover aspect-square"
+      />
 
       {/* Actions */}
-      <div className="flex justify-between items-center px-4 py-2">
-        <div className="flex gap-2">
-          <IconButton onClick={likeOrDislikeHandler}>
-            {liked ? <FaHeart className="text-red-600" size={22} /> : <FaRegHeart size={22} />}
+      <div className="flex justify-between items-center px-4 py-3">
+        <div className="flex gap-3">
+          <IconButton
+            onClick={likeOrDislikeHandler}
+            sx={{ color: liked ? '#ef4444' : '#9ca3af' }}
+          >
+            {liked ? <FaHeart size={24} /> : <FaRegHeart size={24} />}
           </IconButton>
-          <IconButton onClick={() => { dispatch(setSelectedPost(post)); setOpen(true); }}>
+          <IconButton
+            onClick={() => {
+              dispatch(setSelectedPost(post));
+              setOpen(true);
+            }}
+            sx={{ color: '#9ca3af', '&:hover': { color: '#3b82f6' } }}
+          >
             <Message />
           </IconButton>
-          <IconButton>
-  <Share />
-</IconButton>
+          <IconButton
+            sx={{ color: '#9ca3af', '&:hover': { color: '#3b82f6' } }}
+          >
+            <Share />
+          </IconButton>
         </div>
-        <IconButton onClick={bookmarkHandler}>
+        <IconButton
+          onClick={bookmarkHandler}
+          sx={{ color: '#9ca3af', '&:hover': { color: '#3b82f6' } }}
+        >
           <Bookmark />
         </IconButton>
       </div>
 
       {/* Likes */}
-      <Typography variant="body2" className="px-4">{postLike} likes</Typography>
+      <Typography
+        variant="body2"
+        className="px-4 text-gray-200"
+      >
+        {postLike} likes
+      </Typography>
 
       {/* Caption */}
-      <Typography variant="body2" className="px-4 py-1">
+      <Typography
+        variant="body2"
+        className="px-4 py-2 text-gray-100"
+      >
         <strong>{post.author?.username}</strong> {post.caption}
       </Typography>
 
@@ -173,24 +248,56 @@ const Post = ({ post }) => {
       {comment.length > 0 && (
         <Typography
           variant="body2"
-          className="text-gray-500 px-4 cursor-pointer"
-          onClick={() => { dispatch(setSelectedPost(post)); setOpen(true); }}
+          className="px-4 text-gray-400 cursor-pointer hover:text-gray-200"
+          onClick={() => {
+            dispatch(setSelectedPost(post));
+            setOpen(true);
+          }}
         >
           View all {comment.length} comments
         </Typography>
       )}
 
       {/* Comment input */}
-      <div className="flex items-center gap-2 px-4 py-3">
+      <div className="flex items-center gap-3 px-4 py-4 border-t border-gray-700">
         <TextField
           value={text}
           onChange={(e) => setText(e.target.value.trim() ? e.target.value : "")}
           placeholder="Add a comment..."
-          variant="standard"
+          variant="outlined"
           fullWidth
+          sx={{
+            '& .MuiOutlinedInput-root': {
+              borderRadius: '0.75rem',
+              backgroundColor: '#374151',
+              color: '#ffffff',
+              '& fieldset': {
+                borderColor: '#4b5563',
+              },
+              '&:hover fieldset': {
+                borderColor: '#3b82f6',
+              },
+              '&.Mui-focused fieldset': {
+                borderColor: '#3b82f6',
+              },
+            },
+            '& .MuiInputBase-input': {
+              color: '#ffffff',
+              padding: '0.5rem',
+            },
+          }}
         />
         {text && (
-          <Button onClick={commentHandler} variant="text" sx={{ color: '#3BADF8' }}>
+          <Button
+            onClick={commentHandler}
+            variant="text"
+            sx={{
+              color: '#3b82f6',
+              fontWeight: 600,
+              textTransform: 'none',
+              '&:hover': { color: '#2563eb' },
+            }}
+          >
             Post
           </Button>
         )}

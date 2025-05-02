@@ -9,6 +9,7 @@ import Comment from '../pages/Comment';
 import axios from 'axios';
 import { toast } from 'sonner';
 import { setPosts } from '../redux/postSlice';
+import server from '../api/axiosInstance';
 
 const CommentDialog = ({ open, setOpen }) => {
   const [text, setText] = useState('');
@@ -30,7 +31,7 @@ const CommentDialog = ({ open, setOpen }) => {
   const sendMessageHandler = async () => {
     try {
       const res = await axios.post(
-        `https://the-cmdian-memories.onrender.com/api/v1/post/${selectedPost?._id}/comment`,
+        `${server}/api/v1/post/${selectedPost?._id}/comment`,
         { text },
         {
           headers: { 'Content-Type': 'application/json' },
@@ -57,11 +58,19 @@ const CommentDialog = ({ open, setOpen }) => {
   if (!selectedPost) return null;
 
   return (
-    <Dialog open={open} onClose={() => setOpen(false)} maxWidth="lg" fullWidth>
+    <Dialog
+      open={open}
+      onClose={() => setOpen(false)}
+      maxWidth="lg"
+      fullWidth
+      PaperProps={{
+        sx: { borderRadius: '1rem', backgroundColor: '#1f2937' },
+      }}
+    >
       <DialogContent className="!p-0">
-        <Box className="flex flex-col md:flex-row bg-gray-900 text-white rounded-lg overflow-hidden">
+        <Box className="flex flex-col md:flex-row rounded-lg overflow-hidden">
           {/* Left - Post Image */}
-          <Box className="md:w-1/2 w-full h-96 md:h-auto bg-black">
+          <Box className="md:w-1/2 w-full h-96 md:h-[600px] bg-black">
             <img
               src={selectedPost?.image}
               alt="post_img"
@@ -70,29 +79,40 @@ const CommentDialog = ({ open, setOpen }) => {
           </Box>
 
           {/* Right - Comments Section */}
-          <Box className="md:w-1/2 w-full flex flex-col justify-between p-4 bg-gray-900">
+          <Box className="md:w-1/2 w-full flex flex-col justify-between p-6 bg-gray-800">
             {/* Header */}
-            <Box className="flex items-center justify-between mb-4">
-              <Box className="flex items-center gap-3">
-                <Avatar src={selectedPost?.author?.profilePicture} />
-                <Typography variant="subtitle2" className="text-white">
+            <Box className="flex items-center justify-between mb-6">
+              <Box className="flex items-center gap-4">
+                <Avatar
+                  src={selectedPost?.author?.profilePicture}
+                  sx={{ width: 48, height: 48, border: '2px solid #3b82f6' }}
+                />
+                <Typography
+                  variant="h6"
+                  className="text-white font-semibold"
+                >
                   {selectedPost?.author?.username}
                 </Typography>
               </Box>
-              <IconButton className="text-gray-300 hover:text-blue-500">
+              <IconButton
+                sx={{
+                  color: '#9ca3af',
+                  '&:hover': { color: '#3b82f6' },
+                }}
+              >
                 <MoreHorizIcon />
               </IconButton>
             </Box>
 
             {/* Comments */}
-            <Box className="flex-1 overflow-y-auto space-y-3 pr-1 scrollbar-thin scrollbar-thumb-gray-700">
+            <Box className="flex-1 overflow-y-auto space-y-4 pr-2 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800">
               {comment.map((c) => (
                 <Comment key={c._id} comment={c} />
               ))}
             </Box>
 
             {/* Input */}
-            <Box className="pt-4 flex items-center gap-3 border-t border-gray-700 mt-4">
+            <Box className="pt-6 flex items-center gap-4 border-t border-gray-600 mt-6">
               <TextField
                 fullWidth
                 placeholder="Add a comment..."
@@ -100,15 +120,38 @@ const CommentDialog = ({ open, setOpen }) => {
                 value={text}
                 onChange={changeEventHandler}
                 variant="outlined"
-                InputProps={{
-                  className: 'bg-gray-800 text-white rounded-md',
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: '0.75rem',
+                    backgroundColor: '#374151',
+                    color: '#ffffff',
+                    '& fieldset': {
+                      borderColor: '#4b5563',
+                    },
+                    '&:hover fieldset': {
+                      borderColor: '#3b82f6',
+                    },
+                    '&.Mui-focused fieldset': {
+                      borderColor: '#3b82f6',
+                    },
+                  },
+                  '& .MuiInputBase-input': {
+                    color: '#ffffff',
+                  },
                 }}
               />
               <Button
                 variant="contained"
                 disabled={!text.trim()}
                 onClick={sendMessageHandler}
-                className="bg-blue-600 hover:bg-blue-700 text-white"
+                sx={{
+                  borderRadius: '0.75rem',
+                  backgroundColor: '#3b82f6',
+                  '&:hover': { backgroundColor: '#2563eb' },
+                  textTransform: 'none',
+                  fontWeight: 600,
+                  paddingX: 4,
+                }}
               >
                 Send
               </Button>
