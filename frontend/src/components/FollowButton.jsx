@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import useFollowUnfollow from '../hooks/useFollowUnfollow';
 
 const FollowButton = ({ targetUserId, isFollowing }) => {
-  const dispatch = useDispatch();
+
   const { handleFollowUnfollow } = useFollowUnfollow(); 
 
   const handleClick = () => {

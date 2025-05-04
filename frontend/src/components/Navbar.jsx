@@ -11,7 +11,6 @@ import {
   Menu,
   MenuItem,
   Divider,
-  Badge,
   useTheme,
   useMediaQuery,
 } from "@mui/material";
@@ -42,7 +41,6 @@ const Navbar = () => {
   const dispatch = useDispatch();
 
   const { user } = useSelector((store) => store.auth);
-  const { likeNotification } = useSelector((store) => store.realTimeNotification);
 
   const hideMobileMenuIcon = location.pathname === "/login" || location.pathname === "/signup";
 

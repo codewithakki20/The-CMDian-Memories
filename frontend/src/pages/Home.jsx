@@ -4,7 +4,7 @@ import Feed from '../components/Feed';
 import CreatePost from './CreatePost';
 import useGetAllPost from '../hooks/useGetAllPost';
 import useGetSuggestedUsers from '../hooks/useGetSuggestedUsers';
-import { Container, Typography, Button, CircularProgress } from '@mui/material';
+import { Container, Typography, Button, } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { RingLoader } from 'react-spinners';
 

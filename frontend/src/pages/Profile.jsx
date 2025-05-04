@@ -12,7 +12,6 @@ const Profile = () => {
   const userId = params.id;
   const { loading, error } = useGetUserProfile(userId);
   const [activeTab, setActiveTab] = useState('posts');
-  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const { userProfile, user } = useSelector(store => store.auth);
