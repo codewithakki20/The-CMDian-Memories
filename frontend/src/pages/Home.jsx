@@ -4,14 +4,19 @@ import Feed from '../components/Feed';
 import CreatePost from './CreatePost';
 import useGetAllPost from '../hooks/useGetAllPost';
 import useGetSuggestedUsers from '../hooks/useGetSuggestedUsers';
-import { Container, Typography, Button } from '@mui/material';
+import { Container, Typography, Button, CircularProgress } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import { RingLoader } from 'react-spinners';
 
 const Home = () => {
   useGetAllPost();
   useGetSuggestedUsers();
 
   const [openPostDialog, setOpenPostDialog] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  // Simulate loading state if necessary
+  setTimeout(() => setLoading(false), 2000); // Simulated loading duration for demo
 
   const handleNavigation = (type) => {
     if (type === 'Create') {
@@ -73,8 +78,16 @@ const Home = () => {
       {/* Main Feed Section */}
       <div className="w-full px-4 sm:px-8 py-16 flex justify-center">
         <div className="w-full max-w-7xl">
-          <Feed />
-          <Outlet />
+          {loading ? (
+            <div className="flex justify-center items-center min-h-[200px]">
+              <RingLoader size={70} color="#3b82f6" />
+            </div>
+          ) : (
+            <>
+              <Feed />
+              <Outlet />
+            </>
+          )}
         </div>
       </div>
 

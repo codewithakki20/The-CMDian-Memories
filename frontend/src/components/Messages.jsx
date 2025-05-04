@@ -1,18 +1,34 @@
-import React, { useEffect, useRef } from 'react';
-import { Avatar, Button, Box, Typography } from '@mui/material';
+import React, { useEffect, useRef, useState } from 'react';
+import { Avatar, Button, Box, Typography, Alert } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import useGetAllMessage from '../hooks/useGetAllMessage';
 import useGetRTM from '../hooks/useGetRTM';
+import { RingLoader } from 'react-spinners';
 
 const Messages = ({ selectedUser }) => {
-  const { messages = [] } = useSelector((store) => store.chat); // Default to an empty array if messages is undefined or null
+  const { messages = [], loading: messagesLoading, error: messagesError } = useSelector((store) => store.chat);
   const { user } = useSelector((store) => store.auth);
   const navigate = useNavigate();
   const endRef = useRef(null);
 
+  const [alert, setAlert] = useState(null); // State for alert message
+
+  // Custom hooks for real-time messaging and getting all messages
   useGetRTM();
   useGetAllMessage();
+
+  useEffect(() => {
+    if (messagesError) {
+      setAlert({ message: 'Failed to load messages. Please try again.', severity: 'error' });
+    }
+  }, [messagesError]);
+
+  useEffect(() => {
+    if (messages.length > 0) {
+      setAlert(null); // Clear alert if messages are loaded successfully
+    }
+  }, [messages]);
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -64,9 +80,22 @@ const Messages = ({ selectedUser }) => {
         </Button>
       </Box>
 
+      {/* Alert Section */}
+      {alert && (
+        <Box mb={2}>
+          <Alert severity={alert.severity} sx={{ borderRadius: '0.75rem' }}>
+            {alert.message}
+          </Alert>
+        </Box>
+      )}
+
       {/* Messages Section */}
       <Box className="flex flex-col gap-3 sm:gap-4">
-        {messages.length > 0 ? (
+        {messagesLoading ? (
+          <Box className="flex justify-center items-center py-4">
+            <RingLoader size={36} color="#3b82f6" />
+          </Box>
+        ) : messages.length > 0 ? (
           messages.map((msg) => {
             const isOwnMessage = msg.senderId === user?._id;
             return (
@@ -94,6 +123,7 @@ const Messages = ({ selectedUser }) => {
             No messages yet.
           </Typography>
         )}
+
         {/* Auto-scroll target */}
         <div ref={endRef} />
       </Box>

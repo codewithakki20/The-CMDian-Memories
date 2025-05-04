@@ -153,34 +153,16 @@ const Navbar = () => {
                 },
               }}
             >
-              <MenuItem onClick={() => handleNavigation("Home")}>
-                <HomeIcon fontSize="small" sx={{ mr: 1, color: '#9ca3af' }} />
-                Home
-              </MenuItem>
-              <MenuItem onClick={() => handleNavigation("Gallery")}>
-                <PhotoLibraryIcon fontSize="small" sx={{ mr: 1, color: '#9ca3af' }} />
-                Gallery
-              </MenuItem>
-              <MenuItem onClick={() => handleNavigation("Users")}>
-                <GroupIcon fontSize="small" sx={{ mr: 1, color: '#9ca3af' }} />
-                Users
-              </MenuItem>
-              <MenuItem onClick={() => handleNavigation("Create")}>
-                <AddIcon fontSize="small" sx={{ mr: 1, color: '#9ca3af' }} />
-                Create
-              </MenuItem>
-              <MenuItem onClick={() => handleNavigation("chat")}>
-                <MessageIcon fontSize="small" sx={{ mr: 1, color: '#9ca3af' }} />
-                Messages
-              </MenuItem>
-              <MenuItem onClick={() => handleNavigation("Notifications")}>
-                <FavoriteIcon fontSize="small" sx={{ mr: 1, color: '#9ca3af' }} />
-                Notifications
-              </MenuItem>
-              <MenuItem onClick={() => handleNavigation("Profile")}>
-                <AccountIcon fontSize="small" sx={{ mr: 1, color: '#9ca3af' }} />
-                My Profile
-              </MenuItem>
+              {["Home", "Gallery", "Users", "Create", "Messages", "Notifications", "Profile"].map((item, index) => (
+                <MenuItem
+                  key={item}
+                  onClick={() => handleNavigation(item)}
+                  sx={{ '&:hover': { backgroundColor: '#374151' } }}
+                >
+                  {getIcon(item, index)}
+                  {item}
+                </MenuItem>
+              ))}
               <Divider sx={{ backgroundColor: '#374151' }} />
               <MenuItem onClick={logoutHandler} sx={{ color: '#ef4444' }}>
                 <LogoutIcon fontSize="small" sx={{ mr: 1, color: '#ef4444' }} />
@@ -193,27 +175,20 @@ const Navbar = () => {
         {/* Desktop Navigation */}
         {!isMobile && user && (
           <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-            {navItem("Home", HomeIcon, handleNavigation)}
-            {navItem("Gallery", PhotoLibraryIcon, handleNavigation)}
-            {navItem("Users", GroupIcon, handleNavigation)}
-            {navItem("Messages", MessageIcon, handleNavigation)}
-            {navItem("Create", AddIcon, handleNavigation)}
-            {navItemWithBadge("Notifications", FavoriteIcon, likeNotification.length, handleNavigation)}
+            {["Home", "Gallery", "Users", "Messages", "Create", "Notifications"].map((item) => (
+              <NavItem key={item} label={item} icon={getIcon(item)} onClick={handleNavigation} />
+            ))}
           </Box>
         )}
 
         {/* Profile Avatar (Desktop Only) */}
         {user && !isMobile && (
           <IconButton onClick={handleMenuOpen} size="small" sx={{ p: 0 }}>
-            {user?.profilePicture ? (
-              <Avatar
-                src={user.profilePicture}
-                alt={user.username}
-                sx={{ width: 40, height: 40, border: '2px solid #3b82f6' }}
-              />
-            ) : (
-              <AccountIcon sx={{ color: '#9ca3af', fontSize: '2rem' }} />
-            )}
+            <Avatar
+              src={user.profilePicture || "/default-profile.jpg"}
+              alt={user.username}
+              sx={{ width: 40, height: 40, border: '2px solid #3b82f6' }}
+            />
           </IconButton>
         )}
 
@@ -237,10 +212,7 @@ const Navbar = () => {
             My Profile
           </MenuItem>
           <Divider sx={{ backgroundColor: '#374151' }} />
-          <MenuItem
-            onClick={logoutHandler}
-            sx={{ color: '#ef4444', '&:hover': { backgroundColor: '#374151' } }}
-          >
+          <MenuItem onClick={logoutHandler} sx={{ color: '#ef4444', '&:hover': { backgroundColor: '#374151' } }}>
             <LogoutIcon fontSize="small" sx={{ mr: 1, color: '#ef4444' }} />
             Logout
           </MenuItem>
@@ -252,39 +224,24 @@ const Navbar = () => {
   );
 };
 
-// Styled Buttons
-const navItem = (label, Icon, onClick) => (
-  <Button
-    startIcon={<Icon sx={{ color: '#9ca3af' }} />}
-    onClick={() => onClick(label)}
-    sx={{
-      color: '#ffffff',
-      fontWeight: 500,
-      px: 2,
-      py: 1,
-      borderRadius: '0.75rem',
-      textTransform: 'none',
-      '&:hover': {
-        backgroundColor: '#374151',
-        color: '#3b82f6',
-      },
-    }}
-  >
-    {label}
-  </Button>
-);
+// Get corresponding icon for each navigation item
+const getIcon = (label) => {
+  const icons = {
+    Home: <HomeIcon fontSize="small" sx={{ mr: 1, color: '#9ca3af' }} />,
+    Gallery: <PhotoLibraryIcon fontSize="small" sx={{ mr: 1, color: '#9ca3af' }} />,
+    Users: <GroupIcon fontSize="small" sx={{ mr: 1, color: '#9ca3af' }} />,
+    Messages: <MessageIcon fontSize="small" sx={{ mr: 1, color: '#9ca3af' }} />,
+    Create: <AddIcon fontSize="small" sx={{ mr: 1, color: '#9ca3af' }} />,
+    Notifications: <FavoriteIcon fontSize="small" sx={{ mr: 1, color: '#9ca3af' }} />,
+    Profile: <AccountIcon fontSize="small" sx={{ mr: 1, color: '#9ca3af' }} />,
+  };
+  return icons[label];
+};
 
-const navItemWithBadge = (label, Icon, count, onClick) => (
+// Navigation Item Component
+const NavItem = ({ label, icon, onClick }) => (
   <Button
-    startIcon={
-      count > 0 ? (
-        <Badge badgeContent={count} color="error">
-          <Icon sx={{ color: '#9ca3af' }} />
-        </Badge>
-      ) : (
-        <Icon sx={{ color: '#9ca3af' }} />
-      )
-    }
+    startIcon={icon}
     onClick={() => onClick(label)}
     sx={{
       color: '#ffffff',

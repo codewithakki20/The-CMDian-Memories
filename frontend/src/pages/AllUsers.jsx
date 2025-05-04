@@ -1,11 +1,21 @@
-import React from 'react';
-import { Avatar, Typography, Link as MuiLink } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Avatar, Typography, Link as MuiLink, Box } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import SuggestedUsers from '../components/SuggestedUsers';
+import { RingLoader } from 'react-spinners';
 
 const AllUsers = () => {
   const { user } = useSelector((store) => store.auth);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate data loading delay (replace with actual loading logic if needed)
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1000); // 1-second delay
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <div className="w-full min-h-screen bg-gray-900 px-4 sm:px-6 lg:px-8 py-10">
@@ -51,8 +61,14 @@ const AllUsers = () => {
           </div>
         </div>
 
-        {/* Suggested Users */}
-        <SuggestedUsers />
+        {/* Suggested Users or Loading Spinner */}
+        {loading ? (
+          <Box className="flex justify-center items-center py-10">
+            <RingLoader size={45} color="#3b82f6" />
+          </Box>
+        ) : (
+          <SuggestedUsers />
+        )}
       </div>
     </div>
   );

@@ -19,6 +19,7 @@ import { toast } from 'sonner';
 import { setPosts, setSelectedPost } from '../redux/postSlice';
 import CommentDialog from '../components/CommentDialog';
 import server from '../api/axiosInstance';
+import { RingLoader } from 'react-spinners';
 
 const Post = ({ post }) => {
   const [text, setText] = useState("");
@@ -29,12 +30,14 @@ const Post = ({ post }) => {
   const [liked, setLiked] = useState(post.likes.includes(user?._id));
   const [postLike, setPostLike] = useState(post.likes.length);
   const [comment, setComment] = useState(post.comments);
+  const [loading, setLoading] = useState(false); // Add loading state
   const dispatch = useDispatch();
 
   const handleMenuOpen = (e) => setMenuAnchor(e.currentTarget);
   const handleMenuClose = () => setMenuAnchor(null);
 
   const likeOrDislikeHandler = async () => {
+    setLoading(true); // Show loader while liking/disliking
     try {
       const action = liked ? 'dislike' : 'like';
       const res = await axios.get(`${server}/api/v1/post/${post._id}/${action}`, {
@@ -57,10 +60,13 @@ const Post = ({ post }) => {
       }
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoading(false); // Hide loader
     }
   };
 
   const commentHandler = async () => {
+    setLoading(true); // Show loader while commenting
     try {
       const res = await axios.post(
         `${server}/api/v1/post/${post._id}/comment`,
@@ -82,10 +88,13 @@ const Post = ({ post }) => {
       }
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoading(false); // Hide loader
     }
   };
 
   const deletePostHandler = async () => {
+    setLoading(true); // Show loader while deleting
     try {
       const res = await axios.delete(`${server}/api/v1/post/delete/${post._id}`, {
         withCredentials: true,
@@ -98,10 +107,13 @@ const Post = ({ post }) => {
     } catch (err) {
       console.error(err);
       toast.error(err.response?.data?.message || 'Something went wrong');
+    } finally {
+      setLoading(false); // Hide loader
     }
   };
 
   const bookmarkHandler = async () => {
+    setLoading(true); // Show loader while bookmarking
     try {
       const res = await axios.get(`${server}/api/v1/post/${post._id}/bookmark`, {
         withCredentials: true,
@@ -111,14 +123,10 @@ const Post = ({ post }) => {
       }
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoading(false); // Hide loader
     }
   };
-
-  // const shareHandler = () => {
-  //   const postUrl = `${window.location.origin}/post/${post._id}`;
-  //   navigator.clipboard.writeText(postUrl);
-  //   toast.success('Post URL copied to clipboard');
-  // };
 
   const shareHandler = async () => {
     if (navigator.share) {
@@ -137,7 +145,6 @@ const Post = ({ post }) => {
       toast.success('Post URL copied to clipboard');
     }
   };
-  
 
   return (
     <div className="my-8 mx-auto w-full max-w-md bg-gray-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300">
@@ -258,6 +265,13 @@ const Post = ({ post }) => {
           <Bookmark />
         </IconButton>
       </div>
+
+      {/* Loader */}
+      {loading && (
+        <div className="flex justify-center items-center py-4">
+          <RingLoader color="#3b82f6" size={50} />
+        </div>
+      )}
 
       {/* Likes */}
       <Typography

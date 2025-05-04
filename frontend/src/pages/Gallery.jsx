@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Container,
   Dialog,
@@ -10,8 +10,10 @@ import {
   Typography,
   Button,
   Stack,
+  Alert,
 } from '@mui/material';
 import { Close as CloseIcon, Share as ShareIcon } from '@mui/icons-material';
+import { RingLoader } from 'react-spinners';
 
 // Dummy memories data
 const memories = [
@@ -56,6 +58,8 @@ const Gallery = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedMemory, setSelectedMemory] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
+  const [alert, setAlert] = useState(null); // For Alert messages
+  const [loading, setLoading] = useState(false); // For loading spinner
 
   const filteredMemories = memories.filter(memory =>
     selectedCategory === 'all' ? true : memory.category === selectedCategory
@@ -80,10 +84,18 @@ const Gallery = () => {
           url: window.location.href,
         });
       } catch (error) {
-        console.error('Error sharing:', error);
+        setAlert({ message: 'Error sharing the memory.', severity: 'error' });
       }
     }
   };
+
+  // Simulate loading process
+  useEffect(() => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false); // Stop loading after 3 seconds (simulate data fetch)
+    }, 3000);
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-900 px-4 sm:px-6 lg:px-8 py-10">
@@ -124,36 +136,56 @@ const Gallery = () => {
           ))}
         </Stack>
 
-        {/* Memories Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
-          {filteredMemories.map((memory) => (
-            <div
-              key={memory.id}
-              onClick={() => handleMemoryClick(memory)}
-              className="cursor-pointer rounded-xl overflow-hidden bg-gray-800 shadow-md hover:shadow-2xl transform hover:scale-105 transition duration-300"
-            >
-              <img
-                src={memory.imageUrl}
-                alt={memory.title}
-                className="w-full h-48 object-cover"
-              />
-              <Box p={3}>
-                <Typography variant="subtitle1" sx={{ fontWeight: 600, color: '#ffffff', mb: 1 }} className="truncate">
-                  {memory.title}
-                </Typography>
-                <Chip
-                  label={memory.category}
-                  size="small"
-                  sx={{
-                    backgroundColor: '#374151',
-                    color: '#ffffff',
-                    fontWeight: 500,
-                  }}
-                />
-              </Box>
+        {/* Alert */}
+        {alert && (
+          <Alert
+            severity={alert.severity || 'info'}
+            sx={{ mb: 3 }}
+            onClose={() => setAlert(null)}
+          >
+            {alert.message}
+          </Alert>
+        )}
+
+        {/* Loading Spinner */}
+        {loading ? (
+          <Box display="flex" justifyContent="center" alignItems="center" minHeight="300px">
+            <RingLoader color="#3b82f6" size={60} />
+          </Box>
+        ) : (
+          <>
+            {/* Memories Grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
+              {filteredMemories.map((memory) => (
+                <div
+                  key={memory.id}
+                  onClick={() => handleMemoryClick(memory)}
+                  className="cursor-pointer rounded-xl overflow-hidden bg-gray-800 shadow-md hover:shadow-2xl transform hover:scale-105 transition duration-300"
+                >
+                  <img
+                    src={memory.imageUrl}
+                    alt={memory.title}
+                    className="w-full h-48 object-cover"
+                  />
+                  <Box p={3}>
+                    <Typography variant="subtitle1" sx={{ fontWeight: 600, color: '#ffffff', mb: 1 }} className="truncate">
+                      {memory.title}
+                    </Typography>
+                    <Chip
+                      label={memory.category}
+                      size="small"
+                      sx={{
+                        backgroundColor: '#374151',
+                        color: '#ffffff',
+                        fontWeight: 500,
+                      }}
+                    />
+                  </Box>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          </>
+        )}
 
         {/* Dialog */}
         <Dialog

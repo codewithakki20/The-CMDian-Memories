@@ -10,10 +10,11 @@ import {
   Box,
   TextField,
   Button,
-  CircularProgress,
   Stack,
+  Alert,
   Link as MuiLink,
 } from '@mui/material';
+import { RingLoader } from 'react-spinners';
 import server from '../api/axiosInstance';
 
 const Signup = () => {
@@ -23,6 +24,7 @@ const Signup = () => {
     password: '',
   });
   const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
   const { user } = useSelector((store) => store.auth);
   const navigate = useNavigate();
 
@@ -32,26 +34,26 @@ const Signup = () => {
 
   const signupHandler = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setErrorMsg('');
+
     try {
-      setLoading(true);
       const res = await axios.post(`${server}/api/v1/user/register`, input, {
         headers: {
           'Content-Type': 'application/json',
         },
         withCredentials: true,
       });
+
       if (res.data.success) {
-        navigate('/login');
         toast.success(res.data.message);
-        setInput({
-          username: '',
-          email: '',
-          password: '',
-        });
+        navigate('/login');
+        setInput({ username: '', email: '', password: '' });
       }
     } catch (error) {
-      console.log(error);
-      toast.error(error?.response?.data?.message || 'Signup failed.');
+      const msg = error?.response?.data?.message || 'Signup failed.';
+      setErrorMsg(msg);
+      toast.error(msg);
     } finally {
       setLoading(false);
     }
@@ -67,11 +69,11 @@ const Signup = () => {
     <Box
       sx={{
         minHeight: '100vh',
-        backgroundColor: '#1f2937', // Tailwind bg-gray-900
+        backgroundColor: '#1f2937',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        px: 2, // horizontal padding for small screens
+        px: 2,
       }}
     >
       <Container maxWidth="sm">
@@ -97,140 +99,74 @@ const Signup = () => {
             </Typography>
           </Box>
 
+          {errorMsg && (
+            <Alert severity="error" sx={{ mb: 3 }}>
+              {errorMsg}
+            </Alert>
+          )}
+
           <form onSubmit={signupHandler}>
             <Stack spacing={3}>
               {/* Username Field */}
-              <Box>
-                <Typography
-                  variant="body2"
-                  sx={{ fontWeight: 500, color: '#ffffff', mb: 1 }}
-                >
-                  Username
-                </Typography>
-                <TextField
-                  fullWidth
-                  type="text"
-                  name="username"
-                  value={input.username}
-                  onChange={changeEventHandler}
-                  variant="outlined"
-                  required
-                  sx={{
-                    '& .MuiOutlinedInput-root': {
-                      borderRadius: '0.75rem',
-                      backgroundColor: '#374151',
-                      color: '#ffffff',
-                      '& fieldset': { borderColor: '#4b5563' },
-                      '&:hover fieldset': { borderColor: '#3b82f6' },
-                      '&.Mui-focused fieldset': { borderColor: '#3b82f6' },
-                    },
-                    '& .MuiInputBase-input': {
-                      color: '#ffffff',
-                    },
-                  }}
-                />
-              </Box>
+              <TextField
+                label="Username"
+                name="username"
+                fullWidth
+                required
+                value={input.username}
+                onChange={changeEventHandler}
+                variant="outlined"
+                sx={fieldStyles}
+              />
 
               {/* Email Field */}
-              <Box>
-                <Typography
-                  variant="body2"
-                  sx={{ fontWeight: 500, color: '#ffffff', mb: 1 }}
-                >
-                  Email
-                </Typography>
-                <TextField
-                  fullWidth
-                  type="email"
-                  name="email"
-                  value={input.email}
-                  onChange={changeEventHandler}
-                  variant="outlined"
-                  required
-                  sx={{
-                    '& .MuiOutlinedInput-root': {
-                      borderRadius: '0.75rem',
-                      backgroundColor: '#374151',
-                      color: '#ffffff',
-                      '& fieldset': { borderColor: '#4b5563' },
-                      '&:hover fieldset': { borderColor: '#3b82f6' },
-                      '&.Mui-focused fieldset': { borderColor: '#3b82f6' },
-                    },
-                    '& .MuiInputBase-input': {
-                      color: '#ffffff',
-                    },
-                  }}
-                />
-              </Box>
+              <TextField
+                label="Email"
+                name="email"
+                type="email"
+                fullWidth
+                required
+                value={input.email}
+                onChange={changeEventHandler}
+                variant="outlined"
+                sx={fieldStyles}
+              />
 
               {/* Password Field */}
-              <Box>
-                <Typography
-                  variant="body2"
-                  sx={{ fontWeight: 500, color: '#ffffff', mb: 1 }}
-                >
-                  Password
-                </Typography>
-                <TextField
-                  fullWidth
-                  type="password"
-                  name="password"
-                  value={input.password}
-                  onChange={changeEventHandler}
-                  variant="outlined"
-                  required
-                  sx={{
-                    '& .MuiOutlinedInput-root': {
-                      borderRadius: '0.75rem',
-                      backgroundColor: '#374151',
-                      color: '#ffffff',
-                      '& fieldset': { borderColor: '#4b5563' },
-                      '&:hover fieldset': { borderColor: '#3b82f6' },
-                      '&.Mui-focused fieldset': { borderColor: '#3b82f6' },
-                    },
-                    '& .MuiInputBase-input': {
-                      color: '#ffffff',
-                    },
-                  }}
-                />
-              </Box>
+              <TextField
+                label="Password"
+                name="password"
+                type="password"
+                fullWidth
+                required
+                value={input.password}
+                onChange={changeEventHandler}
+                variant="outlined"
+                sx={fieldStyles}
+              />
 
               {/* Submit Button */}
-              {loading ? (
-                <Button
-                  fullWidth
-                  variant="contained"
-                  disabled
-                  sx={{
-                    borderRadius: '0.75rem',
-                    backgroundColor: '#4b5563',
-                    color: '#ffffff',
-                    py: 1.5,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <CircularProgress size={24} sx={{ color: '#ffffff', mr: 2 }} />
-                  Please wait...
-                </Button>
-              ) : (
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  sx={{
-                    borderRadius: '0.75rem',
-                    backgroundColor: '#3b82f6',
-                    '&:hover': { backgroundColor: '#2563eb' },
-                    textTransform: 'none',
-                    fontWeight: 600,
-                    py: 1.5,
-                  }}
-                >
-                  Signup
-                </Button>
-              )}
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                disabled={loading}
+                sx={{
+                  borderRadius: '0.75rem',
+                  backgroundColor: loading ? '#4b5563' : '#3b82f6',
+                  '&:hover': {
+                    backgroundColor: loading ? '#4b5563' : '#2563eb',
+                  },
+                  textTransform: 'none',
+                  fontWeight: 600,
+                  py: 1.5,
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              >
+                {loading ? <RingLoader size={24} color="#ffffff" /> : 'Signup'}
+              </Button>
             </Stack>
 
             <Box mt={4} textAlign="center">
@@ -249,6 +185,27 @@ const Signup = () => {
       </Container>
     </Box>
   );
+};
+
+// Shared MUI TextField styles
+const fieldStyles = {
+  '& .MuiOutlinedInput-root': {
+    borderRadius: '0.75rem',
+    backgroundColor: '#374151',
+    color: '#ffffff',
+    '& fieldset': { borderColor: '#4b5563' },
+    '&:hover fieldset': { borderColor: '#3b82f6' },
+    '&.Mui-focused fieldset': { borderColor: '#3b82f6' },
+  },
+  '& .MuiInputLabel-root': {
+    color: '#9ca3af',
+    '&.Mui-focused': {
+      color: '#3b82f6',
+    },
+  },
+  '& .MuiInputBase-input': {
+    color: '#ffffff',
+  },
 };
 
 export default Signup;

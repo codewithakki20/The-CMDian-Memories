@@ -1,5 +1,4 @@
-// src/App.jsx
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { setOnlineUsers } from './redux/chatSlice';
@@ -16,6 +15,7 @@ import Users from './pages/AllUsers';
 import Gallery from './pages/Gallery';
 
 import { connectSocket, closeSocket } from './lib/socket'; // ✅ Import new module
+import { RingLoader } from 'react-spinners'; // ✅ Import React Spinner
 
 const AppLayout = () => (
   <>
@@ -43,6 +43,7 @@ const browserRouter = createBrowserRouter([
 function App() {
   const { user } = useSelector((store) => store.auth);
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(true); // State to manage loading
 
   useEffect(() => {
     if (user) {
@@ -56,13 +57,26 @@ function App() {
         dispatch(setLikeNotification(notification));
       });
 
+      // Setting loading to false once socket is connected
+      setLoading(false);
+
       return () => {
         closeSocket();
       };
     } else {
+      setLoading(false); // If there's no user, set loading to false
       closeSocket();
     }
   }, [user, dispatch]);
+
+  // If the app is still loading, show the RingLoader
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-gray-900">
+        <RingLoader size={100} color="#3b82f6" />
+      </div>
+    );
+  }
 
   return <RouterProvider router={browserRouter} />;
 }

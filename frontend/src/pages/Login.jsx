@@ -6,9 +6,9 @@ import {
   TextField,
   Button,
   Link,
-  CircularProgress,
   Paper,
-  Stack
+  Stack,
+  Alert
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -16,11 +16,13 @@ import axios from 'axios';
 import { setAuthUser } from '../redux/authSlice';
 import { toast } from 'sonner';
 import server from '../api/axiosInstance';
+import { RingLoader } from 'react-spinners';
 
 const Login = () => {
   const [input, setInput] = useState({ email: '', password: '' });
   const [loading, setLoading] = useState(false);
-  const { user } = useSelector(store => store.auth);
+  const [errorMsg, setErrorMsg] = useState('');
+  const { user } = useSelector((store) => store.auth);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -31,12 +33,11 @@ const Login = () => {
   const loginHandler = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setErrorMsg('');
 
     try {
       const res = await axios.post(`${server}/api/v1/user/login`, input, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         withCredentials: true,
       });
 
@@ -47,16 +48,16 @@ const Login = () => {
         setInput({ email: '', password: '' });
       }
     } catch (error) {
-      toast.error(error.response?.data?.message || 'An error occurred');
+      const msg = error.response?.data?.message || 'An error occurred';
+      setErrorMsg(msg);
+      toast.error(msg);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    if (user) {
-      navigate('/');
-    }
+    if (user) navigate('/');
   }, [user, navigate]);
 
   return (
@@ -79,6 +80,12 @@ const Login = () => {
             </Typography>
           </Box>
 
+          {errorMsg && (
+            <Alert severity="error" sx={{ mb: 3 }}>
+              {errorMsg}
+            </Alert>
+          )}
+
           <Box component="form" onSubmit={loginHandler} noValidate>
             <Stack spacing={3}>
               <TextField
@@ -92,31 +99,7 @@ const Login = () => {
                 required
                 fullWidth
                 variant="outlined"
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    borderRadius: '0.75rem',
-                    backgroundColor: '#374151',
-                    color: '#ffffff',
-                    '& fieldset': {
-                      borderColor: '#4b5563',
-                    },
-                    '&:hover fieldset': {
-                      borderColor: '#3b82f6',
-                    },
-                    '&.Mui-focused fieldset': {
-                      borderColor: '#3b82f6',
-                    },
-                  },
-                  '& .MuiInputLabel-root': {
-                    color: '#9ca3af',
-                    '&.Mui-focused': {
-                      color: '#3b82f6',
-                    },
-                  },
-                  '& .MuiInputBase-input': {
-                    color: '#ffffff',
-                  },
-                }}
+                sx={muiFieldStyles}
               />
               <TextField
                 id="password"
@@ -129,31 +112,7 @@ const Login = () => {
                 required
                 fullWidth
                 variant="outlined"
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    borderRadius: '0.75rem',
-                    backgroundColor: '#374151',
-                    color: '#ffffff',
-                    '& fieldset': {
-                      borderColor: '#4b5563',
-                    },
-                    '&:hover fieldset': {
-                      borderColor: '#3b82f6',
-                    },
-                    '&.Mui-focused fieldset': {
-                      borderColor: '#3b82f6',
-                    },
-                  },
-                  '& .MuiInputLabel-root': {
-                    color: '#9ca3af',
-                    '&.Mui-focused': {
-                      color: '#3b82f6',
-                    },
-                  },
-                  '& .MuiInputBase-input': {
-                    color: '#ffffff',
-                  },
-                }}
+                sx={muiFieldStyles}
               />
               <Button
                 type="submit"
@@ -172,7 +131,7 @@ const Login = () => {
                   py: 1.5,
                 }}
               >
-                {loading ? <CircularProgress size={24} sx={{ color: '#ffffff' }} /> : 'Login'}
+                {loading ? <RingLoader size={24} color="#ffffff" /> : 'Login'}
               </Button>
             </Stack>
           </Box>
@@ -189,6 +148,33 @@ const Login = () => {
       </Container>
     </Box>
   );
+};
+
+// Common styles for TextField
+const muiFieldStyles = {
+  '& .MuiOutlinedInput-root': {
+    borderRadius: '0.75rem',
+    backgroundColor: '#374151',
+    color: '#ffffff',
+    '& fieldset': {
+      borderColor: '#4b5563',
+    },
+    '&:hover fieldset': {
+      borderColor: '#3b82f6',
+    },
+    '&.Mui-focused fieldset': {
+      borderColor: '#3b82f6',
+    },
+  },
+  '& .MuiInputLabel-root': {
+    color: '#9ca3af',
+    '&.Mui-focused': {
+      color: '#3b82f6',
+    },
+  },
+  '& .MuiInputBase-input': {
+    color: '#ffffff',
+  },
 };
 
 export default Login;

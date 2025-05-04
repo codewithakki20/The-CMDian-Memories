@@ -1,7 +1,16 @@
 import React from 'react';
 import { Avatar, Typography } from '@mui/material';
+import { RingLoader } from 'react-spinners';
 
-const Comment = ({ comment }) => {
+const Comment = ({ comment, isLoading = false }) => {
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center w-full p-6">
+        <RingLoader color="#3b82f6" size={50} />
+      </div>
+    );
+  }
+
   const { author, text } = comment || {};
 
   return (
@@ -10,8 +19,8 @@ const Comment = ({ comment }) => {
         alt={author?.username || 'User'}
         src={author?.profilePicture || ''}
         sx={{
-          width: { xs: 32, sm: 40 }, // Responsive width for avatar
-          height: { xs: 32, sm: 40 }, // Responsive height for avatar
+          width: { xs: 32, sm: 40 },
+          height: { xs: 32, sm: 40 },
           border: '2px solid #3b82f6',
         }}
       />
@@ -21,7 +30,7 @@ const Comment = ({ comment }) => {
           sx={{
             fontWeight: 600,
             color: '#ffffff',
-            fontSize: { xs: '0.875rem', sm: '0.9rem' }, // Adjust font size for small devices
+            fontSize: { xs: '0.875rem', sm: '0.9rem' },
             overflowWrap: 'break-word',
           }}
         >
@@ -31,9 +40,9 @@ const Comment = ({ comment }) => {
           variant="body2"
           sx={{
             color: '#d1d5db',
-            fontSize: { xs: '0.75rem', sm: '0.85rem' }, // Adjust font size for small devices
+            fontSize: { xs: '0.75rem', sm: '0.85rem' },
             lineHeight: 1.5,
-            wordBreak: 'break-word', // Ensure text doesn't overflow
+            wordBreak: 'break-word',
           }}
         >
           {text}

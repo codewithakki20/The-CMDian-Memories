@@ -9,16 +9,27 @@ import {
   CircularProgress,
   Typography,
   Avatar,
+  Box,
 } from '@mui/material';
 import { MessageCircleCode } from 'lucide-react';
 import Messages from '../components/Messages';
 import server from '../api/axiosInstance';
+import { RingLoader } from 'react-spinners';
 
 const ChatPage = () => {
   const [textMessage, setTextMessage] = useState('');
+  const [loading, setLoading] = useState(true);
   const { user, suggestedUsers, selectedUser } = useSelector((store) => store.auth);
   const { onlineUsers, messages } = useSelector((store) => store.chat);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    // Simulate loading or use actual API status
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, []);
 
   const sendMessageHandler = async (receiverId) => {
     try {
@@ -53,33 +64,40 @@ const ChatPage = () => {
           {user?.username}
         </Typography>
         <hr className="mb-4 border-gray-600" />
-        {suggestedUsers?.map((suggestedUser) => {
-          const isOnline = onlineUsers?.includes(suggestedUser?._id);
-          return (
-            <div
-              key={suggestedUser._id}
-              onClick={() => dispatch(setSelectedUser(suggestedUser))}
-              className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 cursor-pointer transition"
-            >
-              <Avatar
-                alt={suggestedUser?.username}
-                src={suggestedUser?.profilePicture}
-                sx={{ width: 48, height: 48, border: '2px solid #3b82f6' }}
-              />
-              <div>
-                <Typography variant="body2" sx={{ fontWeight: 500, color: '#ffffff' }}>
-                  {suggestedUser?.username}
-                </Typography>
-                <Typography
-                  variant="caption"
-                  sx={{ color: isOnline ? '#22c55e' : '#ef4444', fontWeight: 500 }}
-                >
-                  {isOnline ? 'Online' : 'Offline'}
-                </Typography>
+
+        {loading ? (
+          <Box className="flex justify-center items-center py-20">
+            <RingLoader size={50} color="#3b82f6" />
+          </Box>
+        ) : (
+          suggestedUsers?.map((suggestedUser) => {
+            const isOnline = onlineUsers?.includes(suggestedUser?._id);
+            return (
+              <div
+                key={suggestedUser._id}
+                onClick={() => dispatch(setSelectedUser(suggestedUser))}
+                className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 cursor-pointer transition"
+              >
+                <Avatar
+                  alt={suggestedUser?.username}
+                  src={suggestedUser?.profilePicture}
+                  sx={{ width: 48, height: 48, border: '2px solid #3b82f6' }}
+                />
+                <div>
+                  <Typography variant="body2" sx={{ fontWeight: 500, color: '#ffffff' }}>
+                    {suggestedUser?.username}
+                  </Typography>
+                  <Typography
+                    variant="caption"
+                    sx={{ color: isOnline ? '#22c55e' : '#ef4444', fontWeight: 500 }}
+                  >
+                    {isOnline ? 'Online' : 'Offline'}
+                  </Typography>
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })
+        )}
       </aside>
 
       {/* Main Chat Area */}

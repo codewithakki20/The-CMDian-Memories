@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import useGetUserProfile from '../hooks/useGetUserProfile';
 import { Link, useParams, useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch  } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Button, Badge, Avatar, Typography } from '@mui/material';
 import { AtSign, Heart, MessageCircle } from 'lucide-react';
 import FollowButton from '../components/FollowButton';
+import { RingLoader } from 'react-spinners';  // Import RingLoader
 
 const Profile = () => {
   const params = useParams();
@@ -12,7 +13,6 @@ const Profile = () => {
   const { loading, error } = useGetUserProfile(userId);
   const [activeTab, setActiveTab] = useState('posts');
   const dispatch = useDispatch();
-
   const navigate = useNavigate();
 
   const { userProfile, user } = useSelector(store => store.auth);
@@ -23,7 +23,14 @@ const Profile = () => {
 
   const displayedPost = activeTab === 'posts' ? userProfile?.posts : userProfile?.bookmarks;
 
-  if (loading) return <div className="text-center text-gray-400">Loading...</div>;
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-gray-900">
+        <RingLoader color="#3b82f6" size={150} />
+      </div>
+    );
+  }
+
   if (error) return <div className="text-center text-red-400">Error loading profile. Please try again later.</div>;
 
   return (
@@ -34,52 +41,50 @@ const Profile = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-y-12 gap-x-16">
           
           {/* Profile Info */}
-<section className="flex flex-col items-center">
-  <Avatar
-    alt="profilephoto"
-    src={userProfile?.profilePicture}
-    sx={{
-      width: 144,
-      height: 144,
-      border: '4px solid #3b82f6',
-      boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
-    }}
-  />
-  <div className="mt-6 text-center">
-    <Typography variant="h5" sx={{ color: '#ffffff', fontWeight: 600 }}>
-      {userProfile?.username}
-    </Typography>
+          <section className="flex flex-col items-center">
+            <Avatar
+              alt="profilephoto"
+              src={userProfile?.profilePicture}
+              sx={{
+                width: 144,
+                height: 144,
+                border: '4px solid #3b82f6',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+              }}
+            />
+            <div className="mt-6 text-center">
+              <Typography variant="h5" sx={{ color: '#ffffff', fontWeight: 600 }}>
+                {userProfile?.username}
+              </Typography>
 
-    <div className="mt-4 flex flex-col sm:flex-row gap-3 justify-center">
-    {isLoggedInUserProfile ? (
-  <>
-    <Link to="/account/edit">
-      <Button variant="outlined" sx={btnStyle}>
-        Edit profile
-      </Button>
-    </Link>
-    <Button variant="outlined" sx={btnStyle}>
-      View archive
-    </Button>
-    <Button variant="outlined" sx={btnStyle}>
-      Ad tools
-    </Button>
-  </>
-) : (
-  <>
-    <FollowButton targetUserId={userProfile?._id} isFollowing={isFollowing} />
-    {isFollowing && (
-      <Button variant="outlined" sx={btnStyle} onClick={() => navigate('/chat')}> 
-        Message
-      </Button>
-    )}
-  </>
-)}
-
-    </div>
-  </div>
-</section>
-
+              <div className="mt-4 flex flex-col sm:flex-row gap-3 justify-center">
+                {isLoggedInUserProfile ? (
+                  <>
+                    <Link to="/account/edit">
+                      <Button variant="outlined" sx={btnStyle}>
+                        Edit profile
+                      </Button>
+                    </Link>
+                    <Button variant="outlined" sx={btnStyle}>
+                      View archive
+                    </Button>
+                    <Button variant="outlined" sx={btnStyle}>
+                      Ad tools
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <FollowButton targetUserId={userProfile?._id} isFollowing={isFollowing} />
+                    {isFollowing && (
+                      <Button variant="outlined" sx={btnStyle} onClick={() => navigate('/chat')}> 
+                        Message
+                      </Button>
+                    )}
+                  </>
+                )}
+              </div>
+            </div>
+          </section>
 
           {/* Stats + Bio */}
           <section className="mt-6 sm:mt-0">

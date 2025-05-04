@@ -7,7 +7,6 @@ import {
   TextField,
   Button,
   Typography,
-  CircularProgress,
   Box,
 } from '@mui/material';
 import { toast } from 'sonner';
@@ -16,6 +15,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setPosts } from '../redux/postSlice';
 import { readFileAsDataURL } from '../lib/utils';
 import server from '../api/axiosInstance';
+import { RingLoader } from 'react-spinners';
 
 const CreatePost = ({ open, setOpen }) => {
   const imageRef = useRef();
@@ -76,7 +76,14 @@ const CreatePost = ({ open, setOpen }) => {
         sx: { borderRadius: '1rem', backgroundColor: '#1f2937' },
       }}
     >
-      <DialogTitle sx={{ textAlign: 'center', color: '#ffffff', fontWeight: 600, fontSize: '1.25rem' }}>
+      <DialogTitle
+        sx={{
+          textAlign: 'center',
+          color: '#ffffff',
+          fontWeight: 600,
+          fontSize: '1.25rem',
+        }}
+      >
         Create New Post
       </DialogTitle>
       <DialogContent className="px-6 py-5">
@@ -86,7 +93,10 @@ const CreatePost = ({ open, setOpen }) => {
             sx={{ width: 48, height: 48, border: '2px solid #3b82f6' }}
           />
           <Box>
-            <Typography variant="subtitle2" sx={{ fontWeight: 600, color: '#ffffff' }}>
+            <Typography
+              variant="subtitle2"
+              sx={{ fontWeight: 600, color: '#ffffff' }}
+            >
               {user?.username}
             </Typography>
             <Typography variant="caption" sx={{ color: '#9ca3af' }}>
@@ -103,6 +113,7 @@ const CreatePost = ({ open, setOpen }) => {
           multiline
           rows={3}
           variant="outlined"
+          disabled={loading}
           sx={{
             '& .MuiOutlinedInput-root': {
               borderRadius: '0.75rem',
@@ -149,12 +160,14 @@ const CreatePost = ({ open, setOpen }) => {
           accept="image/*"
           hidden
           onChange={fileChangeHandler}
+          disabled={loading}
         />
 
         <Box mt={3} textAlign="center">
           <Button
             variant="outlined"
             onClick={() => imageRef.current.click()}
+            disabled={loading}
             sx={{
               borderRadius: '0.75rem',
               borderColor: '#3b82f6',
@@ -174,25 +187,35 @@ const CreatePost = ({ open, setOpen }) => {
           </Button>
         </Box>
 
-        {imagePreview && (
+        {imagePreview && !loading && (
           <Box mt={3}>
             <Button
               variant="contained"
               fullWidth
               onClick={createPostHandler}
-              disabled={loading}
-              startIcon={loading && <CircularProgress size={18} sx={{ color: '#ffffff' }} />}
               sx={{
                 borderRadius: '0.75rem',
-                backgroundColor: loading ? '#4b5563' : '#3b82f6',
-                '&:hover': { backgroundColor: loading ? '#4b5563' : '#2563eb' },
+                backgroundColor: '#3b82f6',
+                '&:hover': { backgroundColor: '#2563eb' },
                 textTransform: 'none',
                 fontWeight: 600,
                 py: 1.5,
               }}
             >
-              {loading ? 'Please wait...' : 'Post'}
+              Post
             </Button>
+          </Box>
+        )}
+
+        {loading && (
+          <Box
+            mt={4}
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            height={150}
+          >
+            <RingLoader color="#3b82f6" size={60} />
           </Box>
         )}
       </DialogContent>

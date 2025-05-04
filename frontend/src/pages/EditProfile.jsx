@@ -4,7 +4,19 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { setAuthUser } from '../redux/authSlice';
-import { Avatar, Button, CircularProgress, TextField, InputLabel, MenuItem, Select, FormControl, Typography, Grid, Paper } from '@mui/material';
+import {
+    Avatar,
+    Button,
+    TextField,
+    InputLabel,
+    MenuItem,
+    Select,
+    FormControl,
+    Typography,
+    Grid,
+    Paper
+} from '@mui/material';
+import { RingLoader } from 'react-spinners';
 import server from '../api/axiosInstance';
 
 const EditProfile = () => {
@@ -188,20 +200,12 @@ const EditProfile = () => {
 
                     <div className="flex justify-end mt-8">
                         {loading ? (
-                            <Button
-                                variant="contained"
-                                disabled
-                                sx={{
-                                    borderRadius: '0.75rem',
-                                    backgroundColor: '#4b5563',
-                                    color: '#ffffff',
-                                    px: 4,
-                                    py: 1,
-                                }}
-                            >
-                                <CircularProgress size={24} sx={{ color: '#ffffff', mr: 2 }} />
-                                Please wait...
-                            </Button>
+                            <div className="flex items-center gap-3">
+                                <RingLoader size={35} color="#3b82f6" />
+                                <Typography sx={{ color: '#ffffff', fontWeight: 500 }}>
+                                    Updating profile...
+                                </Typography>
+                            </div>
                         ) : (
                             <Button
                                 onClick={editProfileHandler}
