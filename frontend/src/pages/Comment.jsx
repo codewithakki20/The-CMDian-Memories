@@ -10,18 +10,19 @@ const Comment = ({ comment }) => {
         alt={author?.username || 'User'}
         src={author?.profilePicture || ''}
         sx={{
-          width: 40,
-          height: 40,
+          width: { xs: 32, sm: 40 }, // Responsive width for avatar
+          height: { xs: 32, sm: 40 }, // Responsive height for avatar
           border: '2px solid #3b82f6',
         }}
       />
-      <div className="flex flex-col">
+      <div className="flex flex-col w-full">
         <Typography
           variant="body1"
           sx={{
             fontWeight: 600,
             color: '#ffffff',
-            fontSize: '0.9rem',
+            fontSize: { xs: '0.875rem', sm: '0.9rem' }, // Adjust font size for small devices
+            overflowWrap: 'break-word',
           }}
         >
           {author?.username || 'User'}
@@ -30,8 +31,9 @@ const Comment = ({ comment }) => {
           variant="body2"
           sx={{
             color: '#d1d5db',
-            fontSize: '0.85rem',
+            fontSize: { xs: '0.75rem', sm: '0.85rem' }, // Adjust font size for small devices
             lineHeight: 1.5,
+            wordBreak: 'break-word', // Ensure text doesn't overflow
           }}
         >
           {text}

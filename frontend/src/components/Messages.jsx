@@ -19,11 +19,13 @@ const Messages = ({ selectedUser }) => {
   }, [messages]);
 
   return (
-    <Box className="flex-1 p-6 bg-gray-800 rounded-2xl shadow-xl overflow-y-auto">
+    <Box
+      className="flex-1 p-4 sm:p-6 bg-gray-800 rounded-t-2xl sm:rounded-2xl shadow-xl overflow-y-auto"
+    >
       {/* User Profile Section */}
-      <Box className="flex flex-col items-center justify-center mb-10">
+      <Box className="flex flex-col items-center justify-center mb-6 sm:mb-10">
         <Avatar
-          sx={{ width: 96, height: 96, border: '3px solid #3b82f6' }}
+          sx={{ width: 80, height: 80, border: '3px solid #3b82f6' }}
           className="shadow-lg"
         >
           <img
@@ -34,21 +36,27 @@ const Messages = ({ selectedUser }) => {
         </Avatar>
         <Typography
           variant="h6"
-          sx={{ mt: 3, color: '#ffffff', fontWeight: 600, fontSize: '1.25rem' }}
+          sx={{
+            mt: 2,
+            color: '#ffffff',
+            fontWeight: 600,
+            fontSize: { xs: '1rem', sm: '1.25rem' },
+          }}
         >
           {selectedUser?.username}
         </Typography>
         <Button
           variant="contained"
           sx={{
-            mt: 3,
+            mt: 2,
             borderRadius: '0.75rem',
             backgroundColor: '#3b82f6',
             '&:hover': { backgroundColor: '#2563eb' },
             textTransform: 'none',
             fontWeight: 600,
-            px: 4,
+            px: 3,
             py: 1,
+            fontSize: { xs: '0.75rem', sm: '0.875rem' },
           }}
           onClick={() => navigate(`/profile/${selectedUser?._id}`)}
         >
@@ -57,7 +65,7 @@ const Messages = ({ selectedUser }) => {
       </Box>
 
       {/* Messages Section */}
-      <Box className="flex flex-col gap-4">
+      <Box className="flex flex-col gap-3 sm:gap-4">
         {messages.length > 0 ? (
           messages.map((msg) => {
             const isOwnMessage = msg.senderId === user?._id;
@@ -67,7 +75,7 @@ const Messages = ({ selectedUser }) => {
                 className={`flex ${isOwnMessage ? 'justify-end' : 'justify-start'}`}
               >
                 <Box
-                  className={`px-4 py-2 rounded-xl max-w-[70%] text-sm shadow-md ${
+                  className={`px-4 py-2 rounded-xl max-w-[85%] sm:max-w-[70%] text-sm shadow-md ${
                     isOwnMessage
                       ? 'bg-gradient-to-r from-blue-600 to-blue-800 text-white rounded-br-none'
                       : 'bg-gray-700 text-gray-100 rounded-bl-none'

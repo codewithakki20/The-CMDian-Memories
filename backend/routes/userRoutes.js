@@ -1,6 +1,7 @@
 import express from "express";
 import { editProfile, followOrUnfollow, getProfile, getSuggestedUsers, login, logout, register } from "../controllers/userController.js";
 import isAuthenticated from "../middlewares/isAuthenticated.js";
+import requireLogin from "../middlewares/requireLogin.js";  
 import upload from "../middlewares/multer.js";
 
 const router = express.Router();
@@ -11,6 +12,6 @@ router.route('/logout').get(logout);
 router.route('/:id/profile').get(isAuthenticated, getProfile);
 router.route('/profile/edit').post(isAuthenticated, upload.single('profilePhoto'), editProfile);
 router.route('/suggested').get(isAuthenticated, getSuggestedUsers);
-router.route('/followorunfollow/:id').post(isAuthenticated, followOrUnfollow);
+router.route('/followorunfollow/:id').post( requireLogin, followOrUnfollow);
 
 export default router;

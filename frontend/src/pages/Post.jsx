@@ -7,11 +7,13 @@ import {
   Menu,
   MenuItem,
   TextField,
-  Typography
+  Typography,
+  Tooltip
 } from '@mui/material';
 import { Bookmark, Message, MoreHoriz, Share } from '@mui/icons-material';
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'sonner';
 import { setPosts, setSelectedPost } from '../redux/postSlice';
@@ -112,11 +114,36 @@ const Post = ({ post }) => {
     }
   };
 
+  // const shareHandler = () => {
+  //   const postUrl = `${window.location.origin}/post/${post._id}`;
+  //   navigator.clipboard.writeText(postUrl);
+  //   toast.success('Post URL copied to clipboard');
+  // };
+
+  const shareHandler = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: post.caption,
+          text: `Check out this post by ${post.author?.username}`,
+          url: `${window.location.origin}/post/${post._id}`,
+        });
+      } catch (error) {
+        console.error('Error sharing:', error);
+      }
+    } else {
+      const postUrl = `${window.location.origin}/post/${post._id}`;
+      navigator.clipboard.writeText(postUrl);
+      toast.success('Post URL copied to clipboard');
+    }
+  };
+  
+
   return (
     <div className="my-8 mx-auto w-full max-w-md bg-gray-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300">
       {/* Header */}
       <div className="flex justify-between items-center p-4">
-        <div className="flex items-center gap-3">
+        <Link to={`/profile/${post.author?._id}`} className="flex items-center gap-3 no-underline">
           <Avatar
             src={post.author?.profilePicture}
             sx={{ width: 44, height: 44, border: '2px solid #3b82f6' }}
@@ -143,7 +170,8 @@ const Post = ({ post }) => {
               </Badge>
             )}
           </div>
-        </div>
+        </Link>
+
         <IconButton
           onClick={handleMenuOpen}
           sx={{ color: '#9ca3af', '&:hover': { color: '#3b82f6' } }}
@@ -214,11 +242,14 @@ const Post = ({ post }) => {
           >
             <Message />
           </IconButton>
-          <IconButton
-            sx={{ color: '#9ca3af', '&:hover': { color: '#3b82f6' } }}
-          >
-            <Share />
-          </IconButton>
+          <Tooltip title="Share Post" arrow>
+            <IconButton
+              onClick={shareHandler}
+              sx={{ color: '#9ca3af', '&:hover': { color: '#3b82f6' } }}
+            >
+              <Share />
+            </IconButton>
+          </Tooltip>
         </div>
         <IconButton
           onClick={bookmarkHandler}
@@ -281,30 +312,26 @@ const Post = ({ post }) => {
                 borderColor: '#3b82f6',
               },
             },
-            '& .MuiInputBase-input': {
-              color: '#ffffff',
-              padding: '0.5rem',
-            },
           }}
         />
-        {text && (
-          <Button
-            onClick={commentHandler}
-            variant="text"
-            sx={{
-              color: '#3b82f6',
-              fontWeight: 600,
-              textTransform: 'none',
-              '&:hover': { color: '#2563eb' },
-            }}
-          >
-            Post
-          </Button>
-        )}
+        <Button
+          variant="contained"
+          color="primary"
+          sx={{
+            borderRadius: '0.75rem',
+            textTransform: 'none',
+            paddingX: 3,
+            paddingY: 1.25,
+            backgroundColor: '#3b82f6',
+          }}
+          onClick={commentHandler}
+        >
+          Post
+        </Button>
       </div>
 
       {/* Comment Dialog */}
-      <CommentDialog open={open} setOpen={setOpen} />
+      {open && <CommentDialog open={open} setOpen={setOpen} />}
     </div>
   );
 };

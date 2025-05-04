@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { Link as RouterLink, useNavigate, useLocation } from "react-router-dom";
 import {
   AppBar,
   Toolbar,
@@ -38,11 +38,13 @@ const Navbar = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const navigate = useNavigate();
+  const location = useLocation();
   const dispatch = useDispatch();
+
   const { user } = useSelector((store) => store.auth);
-  const { likeNotification } = useSelector(
-    (store) => store.realTimeNotification
-  );
+  const { likeNotification } = useSelector((store) => store.realTimeNotification);
+
+  const hideMobileMenuIcon = location.pathname === "/login" || location.pathname === "/signup";
 
   const [anchorEl, setAnchorEl] = useState(null);
   const openMenu = Boolean(anchorEl);
@@ -60,9 +62,7 @@ const Navbar = () => {
 
   const logoutHandler = async () => {
     try {
-      const res = await axios.get(`${server}/api/v1/user/logout`, {
-        withCredentials: true,
-      });
+      const res = await axios.get(`${server}/api/v1/user/logout`, { withCredentials: true });
       if (res.data.success) {
         dispatch(setAuthUser(null));
         dispatch(setSelectedPost(null));
@@ -71,7 +71,7 @@ const Navbar = () => {
         toast.success(res.data.message);
       }
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error.response?.data?.message || "Logout failed");
     }
     handleMenuClose();
     handleMobileMenuClose();
@@ -123,14 +123,14 @@ const Navbar = () => {
             variant="h6"
             component={RouterLink}
             to="/"
-            sx={{ color: '#3b82f6', fontWeight: 700, fontSize: '1.5rem' }}
+            sx={{ color: '#3b82f6', fontWeight: 700, fontSize: '1.5rem', textDecoration: 'none' }}
           >
             The CMDian Memories
           </Typography>
         </Box>
 
-        {/* Mobile Menu Button on the Right */}
-        {isMobile && (
+        {/* Mobile Menu Icon */}
+        {isMobile && !hideMobileMenuIcon && (
           <Box sx={{ display: "flex", alignItems: "center" }}>
             <IconButton
               onClick={handleMobileMenuOpen}
@@ -169,6 +169,10 @@ const Navbar = () => {
                 <AddIcon fontSize="small" sx={{ mr: 1, color: '#9ca3af' }} />
                 Create
               </MenuItem>
+              <MenuItem onClick={() => handleNavigation("chat")}>
+                <MessageIcon fontSize="small" sx={{ mr: 1, color: '#9ca3af' }} />
+                Messages
+              </MenuItem>
               <MenuItem onClick={() => handleNavigation("Notifications")}>
                 <FavoriteIcon fontSize="small" sx={{ mr: 1, color: '#9ca3af' }} />
                 Notifications
@@ -186,7 +190,7 @@ const Navbar = () => {
           </Box>
         )}
 
-        {/* Desktop Navigation Buttons */}
+        {/* Desktop Navigation */}
         {!isMobile && user && (
           <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
             {navItem("Home", HomeIcon, handleNavigation)}
@@ -194,22 +198,13 @@ const Navbar = () => {
             {navItem("Users", GroupIcon, handleNavigation)}
             {navItem("Messages", MessageIcon, handleNavigation)}
             {navItem("Create", AddIcon, handleNavigation)}
-            {navItemWithBadge(
-              "Notifications",
-              FavoriteIcon,
-              likeNotification.length,
-              handleNavigation
-            )}
+            {navItemWithBadge("Notifications", FavoriteIcon, likeNotification.length, handleNavigation)}
           </Box>
         )}
 
-        {/* Avatar and Dropdown Menu for Profile (Desktop) */}
+        {/* Profile Avatar (Desktop Only) */}
         {user && !isMobile && (
-          <IconButton
-            onClick={handleMenuOpen}
-            size="small"
-            sx={{ p: 0 }}
-          >
+          <IconButton onClick={handleMenuOpen} size="small" sx={{ p: 0 }}>
             {user?.profilePicture ? (
               <Avatar
                 src={user.profilePicture}
@@ -222,7 +217,7 @@ const Navbar = () => {
           </IconButton>
         )}
 
-        {/* Menu for Profile and Logout */}
+        {/* Profile Menu */}
         <Menu
           anchorEl={anchorEl}
           open={openMenu}
@@ -238,10 +233,7 @@ const Navbar = () => {
             },
           }}
         >
-          <MenuItem
-            onClick={() => handleNavigation("Profile")}
-            sx={{ '&:hover': { backgroundColor: '#374151' } }}
-          >
+          <MenuItem onClick={() => handleNavigation("Profile")} sx={{ '&:hover': { backgroundColor: '#374151' } }}>
             My Profile
           </MenuItem>
           <Divider sx={{ backgroundColor: '#374151' }} />
@@ -260,8 +252,7 @@ const Navbar = () => {
   );
 };
 
-// ========== Styled Navigation Buttons ==========
-
+// Styled Buttons
 const navItem = (label, Icon, onClick) => (
   <Button
     startIcon={<Icon sx={{ color: '#9ca3af' }} />}

@@ -86,16 +86,10 @@ const CreatePost = ({ open, setOpen }) => {
             sx={{ width: 48, height: 48, border: '2px solid #3b82f6' }}
           />
           <Box>
-            <Typography
-              variant="subtitle2"
-              sx={{ fontWeight: 600, color: '#ffffff' }}
-            >
+            <Typography variant="subtitle2" sx={{ fontWeight: 600, color: '#ffffff' }}>
               {user?.username}
             </Typography>
-            <Typography
-              variant="caption"
-              sx={{ color: '#9ca3af' }}
-            >
+            <Typography variant="caption" sx={{ color: '#9ca3af' }}>
               {user?.bio || 'Bio here...'}
             </Typography>
           </Box>

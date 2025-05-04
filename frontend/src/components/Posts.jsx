@@ -10,7 +10,7 @@ const Posts = () => {
     <Box className="px-4 py-8 bg-gray-900 min-h-screen">
       <Grid container spacing={3} className="justify-center">
         {posts.map((post) => (
-          <Grid item xs={12} sm={6} md={4} key={post._id}>
+          <Grid item xs={12} sm={6} md={4} lg={3} key={post._id}>
             <Paper
               elevation={5}
               sx={{

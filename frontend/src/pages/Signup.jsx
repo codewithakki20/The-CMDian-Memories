@@ -3,7 +3,17 @@ import axios from 'axios';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { Container, Paper, Typography, Box, TextField, Button, CircularProgress, Stack, Link as MuiLink } from '@mui/material';
+import {
+  Container,
+  Paper,
+  Typography,
+  Box,
+  TextField,
+  Button,
+  CircularProgress,
+  Stack,
+  Link as MuiLink,
+} from '@mui/material';
 import server from '../api/axiosInstance';
 
 const Signup = () => {
@@ -41,7 +51,7 @@ const Signup = () => {
       }
     } catch (error) {
       console.log(error);
-      toast.error(error.response.data.message);
+      toast.error(error?.response?.data?.message || 'Signup failed.');
     } finally {
       setLoading(false);
     }
@@ -54,192 +64,190 @@ const Signup = () => {
   }, [user, navigate]);
 
   return (
-    <Container maxWidth="sm" className="mt-16 bg-gray-900 min-h-screen">
-      <Paper
-        elevation={6}
-        sx={{ p: 6, borderRadius: '1rem', backgroundColor: '#1f2937' }}
-      >
-        <Box textAlign="center" className="mb-8">
-          <Typography
-            component="h1"
-            variant="h4"
-            sx={{ fontWeight: 700, color: '#ffffff', mb: 2 }}
-          >
-            Create an Account
-          </Typography>
-          <Typography
-            variant="body2"
-            sx={{ color: '#9ca3af' }}
-          >
-            Join The CMDians Memories today!
-          </Typography>
-        </Box>
-
-        <form onSubmit={signupHandler} className="flex flex-col gap-6">
-          <Stack spacing={3}>
-            <Box>
-              <Typography
-                variant="body2"
-                sx={{ fontWeight: 500, color: '#ffffff', mb: 1 }}
-              >
-                Username
-              </Typography>
-              <TextField
-                fullWidth
-                type="text"
-                name="username"
-                value={input.username}
-                onChange={changeEventHandler}
-                variant="outlined"
-                required
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    borderRadius: '0.75rem',
-                    backgroundColor: '#374151',
-                    color: '#ffffff',
-                    '& fieldset': {
-                      borderColor: '#4b5563',
-                    },
-                    '&:hover fieldset': {
-                      borderColor: '#3b82f6',
-                    },
-                    '&.Mui-focused fieldset': {
-                      borderColor: '#3b82f6',
-                    },
-                  },
-                  '& .MuiInputBase-input': {
-                    color: '#ffffff',
-                  },
-                }}
-              />
-            </Box>
-            <Box>
-              <Typography
-                variant="body2"
-                sx={{ fontWeight: 500, color: '#ffffff', mb: 1 }}
-              >
-                Email
-              </Typography>
-              <TextField
-                fullWidth
-                type="email"
-                name="email"
-                value={input.email}
-                onChange={changeEventHandler}
-                variant="outlined"
-                required
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    borderRadius: '0.75rem',
-                    backgroundColor: '#374151',
-                    color: '#ffffff',
-                    '& fieldset': {
-                      borderColor: '#4b5563',
-                    },
-                    '&:hover fieldset': {
-                      borderColor: '#3b82f6',
-                    },
-                    '&.Mui-focused fieldset': {
-                      borderColor: '#3b82f6',
-                    },
-                  },
-                  '& .MuiInputBase-input': {
-                    color: '#ffffff',
-                  },
-                }}
-              />
-            </Box>
-            <Box>
-              <Typography
-                variant="body2"
-                sx={{ fontWeight: 500, color: '#ffffff', mb: 1 }}
-              >
-                Password
-              </Typography>
-              <TextField
-                fullWidth
-                type="password"
-                name="password"
-                value={input.password}
-                onChange={changeEventHandler}
-                variant="outlined"
-                required
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    borderRadius: '0.75rem',
-                    backgroundColor: '#374151',
-                    color: '#ffffff',
-                    '& fieldset': {
-                      borderColor: '#4b5563',
-                    },
-                    '&:hover fieldset': {
-                      borderColor: '#3b82f6',
-                    },
-                    '&.Mui-focused fieldset': {
-                      borderColor: '#3b82f6',
-                    },
-                  },
-                  '& .MuiInputBase-input': {
-                    color: '#ffffff',
-                  },
-                }}
-              />
-            </Box>
-
-            {loading ? (
-              <Button
-                fullWidth
-                variant="contained"
-                disabled
-                sx={{
-                  borderRadius: '0.75rem',
-                  backgroundColor: '#4b5563',
-                  color: '#ffffff',
-                  py: 1.5,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <CircularProgress size={24} sx={{ color: '#ffffff', mr: 2 }} />
-                Please wait...
-              </Button>
-            ) : (
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                sx={{
-                  borderRadius: '0.75rem',
-                  backgroundColor: '#3b82f6',
-                  '&:hover': { backgroundColor: '#2563eb' },
-                  textTransform: 'none',
-                  fontWeight: 600,
-                  py: 1.5,
-                }}
-              >
-                Signup
-              </Button>
-            )}
-          </Stack>
-
-          <Box mt={4} textAlign="center">
+    <Box
+      sx={{
+        minHeight: '100vh',
+        backgroundColor: '#1f2937', // Tailwind bg-gray-900
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        px: 2, // horizontal padding for small screens
+      }}
+    >
+      <Container maxWidth="sm">
+        <Paper
+          elevation={6}
+          sx={{
+            p: { xs: 3, sm: 4, md: 6 },
+            borderRadius: '1rem',
+            backgroundColor: '#1f2937',
+            width: '100%',
+          }}
+        >
+          <Box textAlign="center" mb={4}>
             <Typography
-              variant="body2"
-              sx={{ color: '#9ca3af' }}
+              component="h1"
+              variant="h4"
+              sx={{ fontWeight: 700, color: '#ffffff', mb: 1 }}
             >
-              Already have an account?{' '}
-              <MuiLink
-                href="/login"
-                sx={{ color: '#3b82f6', '&:hover': { color: '#2563eb' } }}
-              >
-                Login
-              </MuiLink>
+              Create an Account
+            </Typography>
+            <Typography variant="body2" sx={{ color: '#9ca3af' }}>
+              Join The CMDians Memories today!
             </Typography>
           </Box>
-        </form>
-      </Paper>
-    </Container>
+
+          <form onSubmit={signupHandler}>
+            <Stack spacing={3}>
+              {/* Username Field */}
+              <Box>
+                <Typography
+                  variant="body2"
+                  sx={{ fontWeight: 500, color: '#ffffff', mb: 1 }}
+                >
+                  Username
+                </Typography>
+                <TextField
+                  fullWidth
+                  type="text"
+                  name="username"
+                  value={input.username}
+                  onChange={changeEventHandler}
+                  variant="outlined"
+                  required
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      borderRadius: '0.75rem',
+                      backgroundColor: '#374151',
+                      color: '#ffffff',
+                      '& fieldset': { borderColor: '#4b5563' },
+                      '&:hover fieldset': { borderColor: '#3b82f6' },
+                      '&.Mui-focused fieldset': { borderColor: '#3b82f6' },
+                    },
+                    '& .MuiInputBase-input': {
+                      color: '#ffffff',
+                    },
+                  }}
+                />
+              </Box>
+
+              {/* Email Field */}
+              <Box>
+                <Typography
+                  variant="body2"
+                  sx={{ fontWeight: 500, color: '#ffffff', mb: 1 }}
+                >
+                  Email
+                </Typography>
+                <TextField
+                  fullWidth
+                  type="email"
+                  name="email"
+                  value={input.email}
+                  onChange={changeEventHandler}
+                  variant="outlined"
+                  required
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      borderRadius: '0.75rem',
+                      backgroundColor: '#374151',
+                      color: '#ffffff',
+                      '& fieldset': { borderColor: '#4b5563' },
+                      '&:hover fieldset': { borderColor: '#3b82f6' },
+                      '&.Mui-focused fieldset': { borderColor: '#3b82f6' },
+                    },
+                    '& .MuiInputBase-input': {
+                      color: '#ffffff',
+                    },
+                  }}
+                />
+              </Box>
+
+              {/* Password Field */}
+              <Box>
+                <Typography
+                  variant="body2"
+                  sx={{ fontWeight: 500, color: '#ffffff', mb: 1 }}
+                >
+                  Password
+                </Typography>
+                <TextField
+                  fullWidth
+                  type="password"
+                  name="password"
+                  value={input.password}
+                  onChange={changeEventHandler}
+                  variant="outlined"
+                  required
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      borderRadius: '0.75rem',
+                      backgroundColor: '#374151',
+                      color: '#ffffff',
+                      '& fieldset': { borderColor: '#4b5563' },
+                      '&:hover fieldset': { borderColor: '#3b82f6' },
+                      '&.Mui-focused fieldset': { borderColor: '#3b82f6' },
+                    },
+                    '& .MuiInputBase-input': {
+                      color: '#ffffff',
+                    },
+                  }}
+                />
+              </Box>
+
+              {/* Submit Button */}
+              {loading ? (
+                <Button
+                  fullWidth
+                  variant="contained"
+                  disabled
+                  sx={{
+                    borderRadius: '0.75rem',
+                    backgroundColor: '#4b5563',
+                    color: '#ffffff',
+                    py: 1.5,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <CircularProgress size={24} sx={{ color: '#ffffff', mr: 2 }} />
+                  Please wait...
+                </Button>
+              ) : (
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  sx={{
+                    borderRadius: '0.75rem',
+                    backgroundColor: '#3b82f6',
+                    '&:hover': { backgroundColor: '#2563eb' },
+                    textTransform: 'none',
+                    fontWeight: 600,
+                    py: 1.5,
+                  }}
+                >
+                  Signup
+                </Button>
+              )}
+            </Stack>
+
+            <Box mt={4} textAlign="center">
+              <Typography variant="body2" sx={{ color: '#9ca3af' }}>
+                Already have an account?{' '}
+                <MuiLink
+                  href="/login"
+                  sx={{ color: '#3b82f6', '&:hover': { color: '#2563eb' } }}
+                >
+                  Login
+                </MuiLink>
+              </Typography>
+            </Box>
+          </form>
+        </Paper>
+      </Container>
+    </Box>
   );
 };
 

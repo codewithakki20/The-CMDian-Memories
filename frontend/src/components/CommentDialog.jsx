@@ -70,7 +70,7 @@ const CommentDialog = ({ open, setOpen }) => {
       <DialogContent className="!p-0">
         <Box className="flex flex-col md:flex-row rounded-lg overflow-hidden">
           {/* Left - Post Image */}
-          <Box className="md:w-1/2 w-full h-96 md:h-[600px] bg-black">
+          <Box className="md:w-1/2 w-full h-80 md:h-[600px] bg-black">
             <img
               src={selectedPost?.image}
               alt="post_img"
