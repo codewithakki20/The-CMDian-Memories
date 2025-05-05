@@ -1,5 +1,5 @@
 {
-  "name": "cmdian-memories-backend",
+  "name": "backend",
   "version": "1.0.0",
   "description": "Backend for The CMDian Memories platform",
   "type": "module",

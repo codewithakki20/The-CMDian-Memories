@@ -8,11 +8,9 @@ import postRoute from "./routes/postRoutes.js";
 import messageRoute from "./routes/messageRoutes.js";
 import { app, server } from "./socket/socket.js";
 import path from "path";
-import { console } from "inspector";
 
- 
+
 dotenv.config();
-
 
 const PORT = process.env.PORT || 3000;
 
